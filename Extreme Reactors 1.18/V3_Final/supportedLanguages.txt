@@ -1,0 +1,5 @@
+{
+  ["en"] = "English",
+  ["de"] = "Deutsch",
+  ["pt-br"] = "Portugues (Brasil)"
+}
