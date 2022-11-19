@@ -172,12 +172,10 @@ function install(program, rawGit)
       term.clear()
     end
     --test for successful install of main program
-    printx = 1
-    printy = 14
-    failed = installFailed(program, printx, printy)
+    failed = installFailed(program, 1, 14)
     --test for successful install of dependencies
     for _, dependency in pairs(dependencies) do
-      failed = installFailed(dependency.fileName, printx, printy)
+      failed = installFailed(dependency.fileName, 1, 15)
     end
   else
     --test for successful install of optional programs
@@ -190,11 +188,11 @@ function install(program, rawGit)
 
   --if failed go back to start, if not reboot.
   if failed == true then
-    draw_text_term(1, 15, "Press Enter to return to menu...", colors.gray, colors.black)
+    draw_text_term(1, 16, "Press Enter to return to menu...", colors.gray, colors.black)
     wait = read()
     start()
   else
-    draw_text_term(1, 15, "Press Enter to reboot...", colors.gray, colors.black)
+    draw_text_term(1, 16, "Press Enter to reboot...", colors.gray, colors.black)
     wait = read()
     shell.run("reboot")
   end
