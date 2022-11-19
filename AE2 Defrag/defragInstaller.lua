@@ -117,7 +117,7 @@ function install(program, rawGit)
   -----------------Install control program---------------
 
   --Make backups folder if it doesn't exist
-  if !fs.exists("backups") then
+  if fs.exists("backups") == false then
     fs.makeDir("backups")
   end
 
