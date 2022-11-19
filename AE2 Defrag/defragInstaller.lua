@@ -174,16 +174,16 @@ function install(program, rawGit)
       term.clear()
     end
     --test for successful install of main program
-    failed = installFailed(program, 1, 4)
+    failed = installFailed(program, 1, 2)
     --test for successful install of dependencies
-    startY = 5
+    startY = 3
     for _, dependency in pairs(dependencies) do
       failed = installFailed(dependency.fileName, 1, startY)
       startY = startY + 1
     end
   else
     --test for successful install of optional programs
-    startY = 4
+    startY = 2
     for _, extra in pairs(extras) do
       if program == extra.fileName then
         failed = installFailed(extra.fileName, 1, startY)
