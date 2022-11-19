@@ -1,0 +1,58 @@
+{
+  install = {
+    name = "Install",
+    files = {
+      "install/installer.lua"
+    }
+  },
+  class = {
+    name = "Class",
+    files = {
+      "classes/base/EnergyStorage.lua",
+      "classes/base/Reactor.lua",
+      "classes/base/Turbine.lua",
+      "classes/bigger_reactors/Reactor.lua",
+      "classes/bigger_reactors/Turbine.lua",
+      "classes/mekanism/MekanismEnergyStorage.lua",
+      "classes/thermal_expansion/ThermalExpansionEnergyStorage.lua",
+      "classes/transport/wrapper.lua",
+      "classes/transport/startup.lua",
+      "classes/transport/reactorTurbine.lua",
+      "classes/transport/reactoronly.lua",
+      "classes/Language.lua",
+      "classes/Peripherals.lua"
+    }
+  },
+  config = {
+    name = "Config",
+    files = {
+      "config/input.lua",
+      "config/options.txt",
+      "config/touchpoint.lua"
+    }
+  },
+  lang = {
+    name = "Language",
+    files = {
+      "lang/en.txt",
+      "lang/de.txt",
+      "lang/pt-br.txt"
+    }
+  },
+  program = {
+    name = "Program",
+    files = {
+      "program/editOptions.lua",
+      "program/reactorControl.lua",
+      "program/turbineControl.lua",
+      "program/monitor.lua"
+    }
+  },  
+  start = {
+    name = "Start",
+    files = {
+      "start/menu.lua",
+      "start/start.lua"
+    }
+  }
+}
