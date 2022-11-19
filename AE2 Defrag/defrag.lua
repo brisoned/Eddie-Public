@@ -3,38 +3,41 @@ wpp = require("wpp")
 wpp.wireless.connect("base")
 
 -- Config
-local monitor = wpp.peripheral.wrap("monitor_16")
+monitor = peripheral.wrap("monitor_16")
 monitor.clear()
 monitor.setTextScale(0.5)
 monitor.setCursorPos(1, 1)
 monitor.setCursorBlink(false)
 redstone.setOutput("bottom", true)
-term.redirect(wpp.peripheral.wrap("monitor_16"))
-local maxUsedSlotsPerCell = 55
-local paddingPercent = 100
+term.redirect(monitor)
+maxUsedSlotsPerCell = 55
+paddingPercent = 100
 
+--Live system peripheral names
 local systemDriveNames = {
-  "wpp@base://7/ae2:drive_17",
-  "wpp@base://7/ae2:drive_18",
-  "wpp@base://7/ae2:drive_19",
-  "wpp@base://7/ae2:drive_20",
-  "wpp@base://7/ae2:drive_23",
+  "ae2:drive_17",
+  "ae2:drive_18",
+  "ae2:drive_19",
+  "ae2:drive_20",
+  "ae2:drive_23",
 }
 
-ioPort = "ae2:io_port_2"
-interface = "wpp@base://15/meBridge_4"
-chest = "ae2:chest_3"
-drives = {
-  "wpp@base://7/ae2:drive_24",
-  "wpp@base://7/ae2:drive_25",
-  "wpp@base://7/ae2:drive_26",
-  "wpp@base://7/ae2:drive_27",
-  "wpp@base://7/ae2:drive_28",
-  "wpp@base://7/ae2:drive_29",
-  "wpp@base://7/ae2:drive_30",
-  "wpp@base://7/ae2:drive_31",
+--Workspace peripheral names
+local ioPort = "ae2:io_port_2"
+local interface = "wpp@base://15/meBridge_4"
+local chest = "ae2:chest_3"
+local drives = {
+  "ae2:drive_24",
+  "ae2:drive_25",
+  "ae2:drive_26",
+  "ae2:drive_27",
+  "ae2:drive_28",
+  "ae2:drive_29",
+  "ae2:drive_30",
+  "ae2:drive_31",
 }
 
+--Cell names and capacity
 local capacityByName = {
   ["ae2:item_storage_cell_1k"] = 1024,
   ["ae2:item_storage_cell_4k"] = 4096,
@@ -86,14 +89,14 @@ end
 -- Peripherals
 
 local systemDrives = map(systemDriveNames, function(driveName)
-  return wpp.peripheral.wrap(driveName)
+  returnperipheral.wrap(driveName)
 end)
 local workspace = {
-  ioPort = wpp.peripheral.wrap(ioPort),
-  interface = wpp.peripheral.wrap(interface),
-  chest = wpp.peripheral.wrap(chest),
+  ioPort = peripheral.wrap(ioPort),
+  interface = peripheral.wrap(interface),
+  chest = peripheral.wrap(chest),
   drives = map(drives, function(driveName)
-    return wpp.peripheral.wrap(driveName)
+    return peripheral.wrap(driveName)
   end)
 }
 
