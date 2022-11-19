@@ -224,9 +224,9 @@ function selectProgram()
   input = read()
   if input == "1" then
     install(mainName, mainGit)
-  elseif tonumber(input) <= maxNum + 1 then
+  elseif tonumber(input) <= (maxNum + 1) then
     for _, extra in pairs(extras) do
-      if tonumber(input) == extra.id + 1 then
+      if tonumber(input) == (extra.id + 1) then
         install(extra.fileName, extra.Git)
       end
     end
