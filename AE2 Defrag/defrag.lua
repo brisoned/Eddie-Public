@@ -54,14 +54,14 @@ function main()
   -- Util Functions
 
   local clock = os.clock
-  local function sleep(n)  -- seconds
+  local function sleep(n) -- seconds
     local t0 = clock()
     while clock() - t0 <= n do end
   end
 
   local function map(array, func)
     local new_array = {}
-    for i,v in pairs(array) do
+    for i, v in pairs(array) do
       new_array[i] = func(v, i)
     end
     return new_array
@@ -199,11 +199,11 @@ function main()
 
   function Cell:clearAndPutInWorkspaceChest()
     local drive = workspace.drives[self.driveNum]
-    drive.pushItems(.ioPort, self.slotNum)
+    drive.pushItems(ioPort, self.slotNum)
     while workspace.ioPort.list()[7] == nil do
       sleep(0.1)
     end
-    workspace.ioPort.pushItems(.chest, 7)
+    workspace.ioPort.pushItems(chest, 7)
   end
 
   function Cell:exportInventoryToWorkspaceChest()
@@ -218,7 +218,7 @@ function main()
   end
   local currentOutputDrive = table.remove(outputDrives, 1)
   function Cell:moveBackToSystem()
-    currentOutputDrive.pullItems(.chest, 2)
+    currentOutputDrive.pullItems(chest, 2)
     if #currentOutputDrive.list() == 10 then
       currentOutputDrive = table.remove(outputDrives, 1)
     end
@@ -250,7 +250,7 @@ function main()
     local self = setmetatable({}, Stack)
     self.ccStack = ccStack
     self.displayName = self.ccStack.displayName
-    self.count = (1+paddingPercent/100)*self.ccStack.amount
+    self.count = (1 + paddingPercent / 100) * self.ccStack.amount
     return self
   end
 
@@ -263,7 +263,7 @@ function main()
       end
     end
     for key, value in pairs(self) do
-        print(key,value)
+      print(key, value)
     end
     local newCell = Cell.getSmallestCellNeededForStack(self)
     newCell:add(self)
@@ -274,12 +274,12 @@ function main()
 
   function Stack:exportAllToWorkspaceChest()
     local amountToExport = self.count
-    print("  Exporting "..amountToExport.." "..self.displayName.."...")
+    print("  Exporting " .. amountToExport .. " " .. self.displayName .. "...")
     local amountExported = 0
     while amountExported < amountToExport do
-      amountExported = amountExported + workspace.interface.exportItemToPeripheral(self.ccStack, .chest)
+      amountExported = amountExported + workspace.interface.exportItemToPeripheral(self.ccStack, chest)
       if unexpected_condition then
-          error()
+        error()
       end
     end
   end
@@ -298,7 +298,7 @@ function main()
     for driveNum, systemDrive in ipairs(systemDrives) do
       local systemCells = systemDrive.list()
       for fromSlotNum, _ in pairs(systemCells) do
-        systemDrive.pushItems(.drives[driveNum], fromSlotNum)
+        systemDrive.pushItems(drives[driveNum], fromSlotNum)
       end
     end
   end
@@ -322,7 +322,7 @@ function main()
     local requiredCellsByCapacity = groupBy(additionallyRequiredCells, 'capacity')
     for _, capacity in ipairs(Cell.capacities) do
       if requiredCellsByCapacity[capacity] ~= nil and #requiredCellsByCapacity[capacity] > 0 then
-        print("  "..#requiredCellsByCapacity[capacity].." "..(capacity/1024).."k cells")
+        print("  " .. #requiredCellsByCapacity[capacity] .. " " .. (capacity / 1024) .. "k cells")
         --monitor.write("  "..#requiredCellsByCapacity[capacity].." "..(capacity/1024).."k cells")
       end
     end
@@ -340,11 +340,11 @@ function main()
     print("moving stacks to chest...")
     --monitor.write("moving stacks to chest...")
     for _, stack in ipairs(cell.inventory) do
-        if pcall(stack.exportAllToWorkspaceChest, stack) then
-            print(" ")
-        else
-            print("failed on stack:"..stack.displayName.."skipping")
-        end    
+      if pcall(stack.exportAllToWorkspaceChest, stack) then
+        print(" ")
+      else
+        print("failed on stack:" .. stack.displayName .. "skipping")
+      end
     end
     print("moving cell back to system...")
     --monitor.write("moving cell back to system...")
