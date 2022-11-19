@@ -1,13 +1,39 @@
---wpp support
-wpp = require("wpp")
-wpp.wireless.connect("base")
-
 -- Config
-monitor = peripheral.wrap("monitor_16")
 maxUsedSlotsPerCell = 55
 paddingPercent = 100
 
+--wpp support
+wpp = require("wpp")
+wpp.wireless.connect("defrag")
 
+--Wrap monitor
+monitor = peripheral.wrap("monitor_16")
+
+--load API
+os.loadAPI("touchpoint")
+
+--Initialize button set
+t = touchpoint.new(monitor)
+
+--Add buttons to button set
+t:add("left", nil, 2, 2, 14, 11, colors.red, colors.lime)
+t:add("right", nil, 16, 2, 28, 11, colors.red, colors.lime)
+
+--Draw buttons
+t:draw()
+
+--Testing button clicks
+while true do
+  --# handleEvents will convert monitor_touch events to button_click if it was on a button
+  local event, p1 = t:handleEvents(os.pullEvent())
+  if event == "button_click" then
+    --# p1 will be "left" or "right", since those are the button labels
+    --# toggle the button that was clicked.
+    t:toggleButton(p1)
+    --# and toggle the redstone output on that side.
+    rs.setOutput(p1, not rs.getOutput(p1))
+  end
+end
 
 function main()
   monitor.clear()
