@@ -218,12 +218,13 @@ function selectProgram()
     optionalStartL = optionalStartL + 1
   end
   draw_text_term(1, optionalStartY, "Enter a number:", colors.yellow, colors.black)
-  term.setCursorPos(1, 12)
+  optionalStartY = optionalStartY + 1
+  term.setCursorPos(1, optionalStartY)
   term.setTextColor(colors.white)
   input = read()
   if input == "1" then
     install(mainName, mainGit)
-  elseif tonumber(input) <= maxNum then
+  elseif tonumber(input) <= maxNum + 1 then
     for _, extra in pairs(extras) do
       if input == extra.id then
         install(extra.fileName, extra.Git)
