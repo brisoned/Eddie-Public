@@ -1,5 +1,5 @@
 --Main program git. Both variables are required for this script to function.
-mainGit = "https://github.com/brisoned/Eddie-Public/blob/5cb9ca3a998a741e178848b3ca6d66598e82a481/AE2 Defrag/defrag.lua#L36"
+mainGit = "https://raw.githubusercontent.com/brisoned/Eddie-Public/main/AE2%20Defrag/defrag.lua"
 mainName = "defrag.lua"
 
 --Startup git. it is assumed this will be called startup or startup.lua.
@@ -75,7 +75,9 @@ function installFailed(file, x, y)
     return false
   else
     draw_text_term(x, y, file .. ":" .. " Failed!", colors.red, colors.black)
-    restoreFile(file)
+    if fs.exists("/backups/" .. file .. "_old") then
+      restoreFile(file)
+    end
     return true
   end
 end
