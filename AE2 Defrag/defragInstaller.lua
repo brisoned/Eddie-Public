@@ -15,17 +15,17 @@ dependencies = {
 
 --Optional gits. Each optional install requires a Git variable and a fileName variables.
 extras = {
-  wpp = {
-    Git = "https://raw.githubusercontent.com/krumpaul/public/main/wpp.lua",
-    fileName = "wpp.lua",
-    displayName = "WPP Master Computer",
-    id = 1
+  ["wpp"] = {
+    ["Git"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp.lua",
+    ["fileName"] = "wpp.lua",
+    ["displayName"] = "WPP Master Computer",
+    ["id"] = 1
   },
-  wpp_remote = {
-    Git = "https://raw.githubusercontent.com/krumpaul/public/main/wpp_remote",
-    fileName = "wpp_remote.lua",
-    displayName = "WPP Remote Computer",
-    id = 2
+  ["wpp_remote"] = {
+    ["Git"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp_remote",
+    ["fileName"] = "wpp_remote.lua",
+    ["displayName"] = "WPP Remote Computer",
+    ["id"] = 2
   }
 }
 
@@ -211,8 +211,8 @@ function selectProgram()
   optionalStartY = 6
   draw_text_term(1, 4, "What would you like to install?", colors.yellow, colors.black)
   draw_text_term(3, 5, "1 - AE2 Defrag", colors.white, colors.black)
-  for extra in pairs(extras) do
-    currentIndex = extra.id + 1
+  for i, extra in ipairs(extras) do
+    currentIndex = extra.identifier + 1
     draw_text_term(3, optionalStartY, currentIndex .. " - " .. extra.displayName, colors.white, colors.black)
     optionalStartY = optionalStartY + 1
   end
@@ -224,7 +224,7 @@ function selectProgram()
   if input == "1" then
     install(mainName, mainGit)
   elseif tonumber(input) <= (maxNum + 1) then
-    for extra in pairs(extras) do
+    for i, extra in ipairs(extras) do
       currentIndex = extra.id + 1
       if tonumber(input) == currentIndex then
         install(extra.fileName, extra.Git)
