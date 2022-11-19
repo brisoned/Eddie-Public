@@ -208,14 +208,13 @@ function selectProgram()
   term.clear()
   menu_bars()
   maxNum = tablelength(extras)
-  optionalStartL = 2
   optionalStartY = 6
   draw_text_term(1, 4, "What would you like to install?", colors.yellow, colors.black)
   draw_text_term(3, 5, "1 - AE2 Defrag", colors.white, colors.black)
   for _, extra in pairs(extras) do
-    draw_text_term(3, optionalStartY, optionalStartL .. " - " .. extra.displayName, colors.white, colors.black)
+    currentIndex = extra.id + 1
+    draw_text_term(3, optionalStartY, currentIndex .. " - " .. extra.displayName, colors.white, colors.black)
     optionalStartY = optionalStartY + 1
-    optionalStartL = optionalStartL + 1
   end
   draw_text_term(1, optionalStartY, "Enter a number:", colors.yellow, colors.black)
   optionalStartY = optionalStartY + 1
@@ -226,7 +225,8 @@ function selectProgram()
     install(mainName, mainGit)
   elseif tonumber(input) <= (maxNum + 1) then
     for _, extra in pairs(extras) do
-      if tonumber(input) == (extra.id + 1) then
+      currentIndex = extra.id + 1
+      if tonumber(input) == currentIndex then
         install(extra.fileName, extra.Git)
       end
     end
