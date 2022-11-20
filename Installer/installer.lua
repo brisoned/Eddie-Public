@@ -20,6 +20,7 @@ programs = {
 	},
 	[2] = {
 		["url"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp.lua",
+		["dirName"] = "WPP",
 		["fileName"] = "wpp.lua",
 		["displayName"] = "WPP API",
 		["makeStartup"] = false
@@ -149,12 +150,12 @@ function install(program, link, startup)
 	for i, p in ipairs(programs) do
 		if p.fileName == program then
 			currRootDir = p.dirName
-			currBackupDir = p.dirName .. "/backups/"
+			currBackupDir = currRootDir .. "/backups/"
 			if p.dependencies ~= nil then
 				currDeps = p.dependencies
-				currDepDir = p.dirName .. "/dependencies/"
+				currDepDir = currRootDir .. "/dependencies/"
 			end
-			currLitPath = p.dirName .. "/" .. p.fileName
+			currLitPath = currRootDir .. "/" .. p.fileName
 			if p.dependencies ~= nil then
 				currDeps = p.dependencies
 			end
