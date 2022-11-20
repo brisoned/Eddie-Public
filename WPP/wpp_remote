@@ -1,0 +1,3 @@
+local wpp = require("./dependencies/wpp")
+
+wpp.wireless.listen("base") -- Starts a loop waiting for wpp rednet messages

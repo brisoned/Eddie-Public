@@ -20,9 +20,8 @@ programs = {
 	},
 	[2] = {
 		["url"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp.lua",
-		["dirName"] = "WPP",
 		["fileName"] = "wpp.lua",
-		["displayName"] = "WPP Master Computer",
+		["displayName"] = "WPP API",
 		["makeStartup"] = false
 	},
 	[3] = {
@@ -30,7 +29,14 @@ programs = {
 		["dirName"] = "WPP_REMOTE",
 		["fileName"] = "wpp_remote.lua",
 		["displayName"] = "WPP Remote Computer",
-		["makeStartup"] = true
+		["makeStartup"] = true,
+		["dependencies"] = {
+			[1] = {
+				["url"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp.lua",
+				["fileName"] = "wpp.lua",
+				["displayName"] = "WPP API",
+			}
+		}
 	}
 }
 
