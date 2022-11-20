@@ -1,30 +1,30 @@
---Progams to list on the install menu. You will need to include any dependencies.
+--Progams to list on the install menu. url, dirName, fileName, and displayName are required. dependencies is optional. Make sure to follow the formatting.
 programs = {
-  [1] = {
-    ["Git"] = "https://raw.githubusercontent.com/brisoned/Eddie-Public/main/AE2%20Defrag/defrag.lua",
-    ["dirName"] = "AE2_Defrag",
-    ["fileName"] = "defrag.lua",
-    ["displayName"] = "AE2 Defrag",
-    ["dependencies"] = {
-      [1] = {
-        ["Git"] = "https://raw.githubusercontent.com/brisoned/Eddie-Public/main/AE2%20Defrag/touchpoint.lua",
-        ["fileName"] = "touchpoint.lua",
-        ["displayName"] = "Touchpoint API"
-      }
-    }
-  },
-  [2] = {
-    ["Git"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp.lua",
-    ["dirName"] = "WPP",
-    ["fileName"] = "wpp.lua",
-    ["displayName"] = "WPP Master Computer"
-  },
-  [3] = {
-    ["Git"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp_remote",
-    ["dirName"] = "WPP_REMOTE",
-    ["fileName"] = "wpp_remote.lua",
-    ["displayName"] = "WPP Remote Computer"
-  }
+	[1] = {
+		["url"] = "https://raw.githubusercontent.com/brisoned/Eddie-Public/main/AE2%20Defrag/defrag.lua",
+		["dirName"] = "AE2_Defrag",
+		["fileName"] = "defrag.lua",
+		["displayName"] = "AE2 Defrag",
+		["dependencies"] = {
+			[1] = {
+				["url"] = "https://raw.githubusercontent.com/brisoned/Eddie-Public/main/AE2%20Defrag/touchpoint.lua",
+				["fileName"] = "touchpoint.lua",
+				["displayName"] = "Touchpoint API"
+			}
+		}
+	},
+	[2] = {
+		["url"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp.lua",
+		["dirName"] = "WPP",
+		["fileName"] = "wpp.lua",
+		["displayName"] = "WPP Master Computer"
+	},
+	[3] = {
+		["url"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp_remote",
+		["dirName"] = "WPP_REMOTE",
+		["fileName"] = "wpp_remote.lua",
+		["displayName"] = "WPP Remote Computer"
+	}
 }
 
 --------------------------------------------------------
@@ -32,215 +32,265 @@ term.clear()
 -------------------FORMATTING-------------------------------
 
 function draw_text_term(x, y, text, text_color, bg_color)
-  term.setTextColor(text_color)
-  term.setBackgroundColor(bg_color)
-  term.setCursorPos(x, y)
-  write(text)
+	term.setTextColor(text_color)
+	term.setBackgroundColor(bg_color)
+	term.setCursorPos(x, y)
+	write(text)
 end
 
 function draw_line_term(x, y, length, color)
-  term.setBackgroundColor(color)
-  term.setCursorPos(x, y)
-  term.write(string.rep(" ", length))
+	term.setBackgroundColor(color)
+	term.setCursorPos(x, y)
+	term.write(string.rep(" ", length))
 end
 
 function progress_bar_term(x, y, length, minVal, maxVal, bar_color, bg_color)
-  draw_line_term(x, y, length, bg_color) --backgoround bar
-  local barSize = math.floor((minVal / maxVal) * length)
-  draw_line_term(x, y, barSize, bar_color) --progress so far
+	draw_line_term(x, y, length, bg_color) --backgoround bar
+	local barSize = math.floor((minVal / maxVal) * length)
+	draw_line_term(x, y, barSize, bar_color) --progress so far
 end
 
 function menu_bars()
+	draw_line_term(1, 1, 55, colors.blue)
+	draw_text_term(10, 1, "The One Install To Rule Them All", colors.white, colors.blue)
 
-  draw_line_term(1, 1, 55, colors.blue)
-  draw_text_term(10, 1, "AE2 Defrag Installer", colors.white, colors.blue)
-
-  draw_line_term(1, 18, 55, colors.blue)
-  draw_line_term(1, 19, 55, colors.blue)
-  draw_text_term(10, 18, "by brisoned", colors.white, colors.blue)
+	draw_line_term(1, 18, 55, colors.blue)
+	draw_line_term(1, 19, 55, colors.blue)
+	draw_text_term(10, 18, "by brisoned", colors.white, colors.blue)
 end
 
 --Restores file from backups
-function restoreFile(file)
-  fs.copy("/backups/" .. file .. "_old", file)
-  fs.delete("/backups/" .. file .. "_old")
+function restoreFiles(backupDir, filePath, fileName)
+	if fs.exists(filePath) then
+		fs.delete(filePath)
+	end
+	fs.copy(backupDir .. fileName .. "_old", filePath)
+	fs.delete(backupDir .. fileName .. "_old")
 end
 
---Test for successful install
-function installFailed(file, x, y)
-  if fs.exists(file) then
-    draw_text_term(x, y, file .. ":" .. " Success!", colors.lime, colors.black)
-    return false
-  else
-    draw_text_term(x, y, file .. ":" .. " Failed!", colors.red, colors.black)
-    if fs.exists("/backups/" .. file .. "_old") then
-      restoreFile(file)
-    end
-    return true
-  end
+--Deletes old backups
+function deleteBackup(backupDir, fileName)
+	if fs.exists(backupDir .. fileName .. "_old") then
+		fs.delete(backupDir .. fileName .. "_old")
+	end
 end
 
---Delete backups
-function deleteBackup(backupDir, file)
-  if fs.exists(backupDir .. file .. "_old") then
-    fs.delete(backupDir .. file .. "_old")
-  end
+--Creates new Backups
+function createBackup(backupDir, filePath, fileName)
+	if fs.exists(filePath) then
+		fs.copy(filePath, backupDir .. fileName .. "_old")
+		fs.delete(filePath)
+	end
 end
 
---Create Backups
-function createBackup(backupDir, litPath, file)
-  if fs.exists(litPath) then
-    fs.copy(litPath, backupDir .. file .. "_old")
-    fs.delete(litPath)
-  end
+--Formats the computer
+function formatComputer()
+	term.clear()
+	draw_text_term(1, 1, "Getting list of files...", colors.yellow, colors.black)
+	local currFiles = fs.list("/")
+	sleep(1)
+	for i, currfile in pairs(currFiles) do
+		if currfile ~= "rom" then
+			fs.delete(currfile)
+			draw_text_term(1, (i + 1), "Deleted: " .. currfile, colors.red, colors.black)
+			sleep(0.5)
+			i = i + 1
+		end
+	end
+	draw_text_term(1, 16, "Press enter to reboot", colors.gray, colors.black)
+	wait = read()
+	os.reboot()
 end
 
---Get table length
+--Returns table length as an integer.
 function tablelength(table)
-  local count = 0
-  for _ in pairs(table) do
-    count = count + 1
-  end
-  return count
+	local count = 0
+	for _ in pairs(table) do
+		count = count + 1
+	end
+	return count
 end
 
---Installs a program and its dependencies
-function install(program, programGit)
-  currDeps = nil
-  term.clear()
-  menu_bars()
+--Installs a program, its dependencies, and manages backups.
+function install(program, link)
+	currDeps = nil
+	term.clear()
+	menu_bars()
+	term.setCursorPos(1, 5)
+	term.setTextColor(colors.white)
+	sleep(0.5)
 
-  draw_text_term(1, 1, "Installing " .. program .. "...", colors.yellow, colors.black)
-  term.setCursorPos(1, 5)
-  term.setTextColor(colors.white)
-  sleep(0.5)
+	-----------------Install control program---------------
 
-  -----------------Install control program---------------
+	--Get variables for current program install
+	for i, p in ipairs(programs) do
+		if p.fileName == program then
+			currRootDir = p.dirName
+			currBackupDir = p.dirName .. "/backups/"
+			if p.dependencies ~= nil then
+				currDeps = p.dependencies
+				currDepDir = p.dirName .. "/dependencies/"
+			end
+			currLitPath = p.dirName .. "/" .. p.fileName
+			if p.dependencies ~= nil then
+				currDeps = p.dependencies
+			end
+		end
+	end
 
-  --Get variables for current program install
-  for i, p in ipairs(programs) do
-    if p.fileName == program then
-      currRootDir = p.dirName
-      currBackupDir = p.dirName .. "/backups/"
-      currDepDir = p.dirName .. "/dependencies/"
-      currLitPath = p.dirName .. "/" .. p.fileName
-      if p.dependencies ~= nil then
-        currDeps = p.dependencies
-      end
-    end
-  end
+	--delete any old backups
+	deleteBackup(currBackupDir, program)
 
-  --delete any old backups
-  deleteBackup(currBackupDir, program)
+	--backup current program
+	createBackup(currBackupDir, currLitPath, program)
 
-  --backup current program
-  createBackup(currBackupDir, currLitPath, program)
+	if currDeps ~= nil then
+		--delete old dependency backups
+		for i, d in ipairs(currDeps) do
+			deleteBackup(currBackupDir, d.fileName)
+		end
 
-  if currDeps ~= nil then
-    --delete old dependency backups
-    for i, d in ipairs(currDeps) do
-      deleteBackup(currBackupDir, d.fileName)
-    end
+		--create new dependency backups
+		for i, d in ipairs(currDeps) do
+			currDepLitPath = currDepDir .. d.fileName
+			createBackup(currBackupDir, currDepLitPath, d.fileName)
+		end
+	end
 
-    --create new dependency backups
-    for i, d in ipairs(currDeps) do
-      currDepLitPath = currDepDir .. "/" .. d.fileName
-      createBackup(currBackupDir, currDepLitPath, d.fileName)
-    end
-  end
+	--install prgram
+	progInstallSuccess = shell.run("wget", link, currLitPath)
+	sleep(0.5)
+	term.clear()
 
-  --install prgram
-  progInstallSuccess = shell.run("wget", programGit, currLitPath)
-  sleep(0.5)
-  term.clear()
+	--install dependencies
+	if currDeps ~= nil then
+		for i, d in ipairs(currDeps) do
+			currDepLitPath = currDepDir .. d.fileName
+			depInstallSuccess = shell.run("wget", d.url, currDepLitPath)
+		end
+	end
+	sleep(0.5)
+	term.clear()
 
-  --install dependencies
-  if currDeps ~= nil then
-    for i, d in ipairs(currDeps) do
-      currDepLitPath = currDepDir .. "/" .. d.fileName
-      depInstallSuccess = shell.run("wget", d.Git, currDepLitPath)
-    end
-  end
-  sleep(0.5)
-  term.clear()
+	--validate program install
+	if progInstallSuccess == true then
+		draw_text_term(1, 1, program .. ":" .. " Success!", colors.lime, colors.black)
+	else
+		draw_text_term(1, 1, program .. ":" .. " Failed!", colors.red, colors.black)
+		draw_text_term(1, 2, "Rolling back install...", colors.yellow, colors.black)
+		sleep(1)
+		if fs.exists(currBackupDir) then
+			if fs.exists(currBackupDir .. program .. "_old") then
+				restoreFiles(currBackupDir, currLitPath, program)
+				if fs.exists(currDepDir) then
+					for i, d in ipairs(dependencies) do
+						if fs.exists(currDepDir .. d.fileName .. "_old") then
+							currDepLitPath = currDepDir .. d.fileName
+							restoreFiles(currBackupDir, currDepLitPath, d.fileName)
+						end
+					end
+				end
+				draw_text_term(1, 3, "Files restored to previous version.", colors.yellow, colors.black)
+			else
+				fs.delete(currRootDir)
+				draw_text_term(1, 3, "Files deleted.", colors.red, colors.black)
+			end
+		else
+			fs.delete(currRootDir)
+		end
+		draw_text_term(1, 16, "Press enter to return to main menu.", colors.red, colors.black)
+		wait = read()
+		start()
+	end
 
-  --validate program install
-  if progInstallSuccess == true then
-    draw_text_term(1, 2, program .. ":" .. " Success!", colors.lime, colors.black)
-  else
-    draw_text_term(1, 3, program .. ":" .. " Failed!", colors.red, colors.black)
-    draw_text_term(1, 4, "Rolling back install...", colors.yellow, colors.black)
-    sleep(1)
-    fs.delete(currRootDir)
-    draw_text_term(1, 5, "Press enter to return to main menu.", colors.red, colors.black)
-    wait = read()
-    start()
-  end
+	--validate dependencies install
+	depPrintStartY = 2
+	if depInstallSuccess == true then
+		draw_text_term(1, depPrintStartY, "Dependencies: Success!", colors.lime, colors.black)
+	else
+		draw_text_term(1, depPrintStartY, "Dependencies: Failed!", colors.red, colors.black)
+		draw_text_term(1, (depPrintStartY + 1), "Rolling back install...", colors.yellow, colors.black)
+		sleep(1)
+		if fs.exists(currBackupDir) then
+			if fs.exists(currBackupDir .. program .. "_old") then
+				restoreFiles(currBackupDir, currLitPath, program)
+				if fs.exists(currDepDir) then
+					for i, d in ipairs(dependencies) do
+						if fs.exists(currDepDir .. d.fileName .. "_old") then
+							currDepLitPath = currDepDir .. d.fileName
+							restoreFiles(currBackupDir, currDepLitPath, d.fileName)
+						end
+					end
+				end
+				draw_text_term(1, (depPrintStartY + 2), "Files restored to previous version.", colors.yellow, colors.black)
+			else
+				fs.delete(currRootDir)
+				draw_text_term(1, (depPrintStartY + 2), "Files deleted.", colors.red, colors.black)
+			end
+		else
+			fs.delete(currRootDir)
+			draw_text_term(1, (depPrintStartY + 2), "Files deleted.", colors.red, colors.black)
+		end
+		draw_text_term(1, 16, "Press enter to return to main menu.", colors.yellow, colors.black)
+		wait = read()
+		start()
+	end
 
-  --validate dependencies install
-  depPrintStartY = 3
-  if depInstallSuccess == true then
-    draw_text_term(1, depPrintStartY, "Dependencies: Success!", colors.lime, colors.black)
-  else
-    draw_text_term(1, (depPrintStartY + 1), "Dependencies: Failed!", colors.red, colors.black)
-    draw_text_term(1, (depPrintStartY + 2), "Rolling back install...", colors.yellow, colors.black)
-    sleep(1)
-    fs.delete(currRootDir)
-    draw_text_term(1, (depPrintStartY + 3), "Press enter to return to main menu.", colors.yellow, colors.black)
-    wait = read()
-    start()
-  end
-
-  --reboot after install
-  if progInstallSuccess == true and depInstallSuccess == true then
-    draw_text_term(1, 16, "Press enter to reboot", colors.gray, colors.black)
-    wait = read()
-    os.reboot()
-  elseif progInstallSuccess == true then
-    draw_text_term(1, 16, "Press enter to reboot", colors.gray, colors.black)
-    wait = read()
-    os.reboot()
-  else
-    draw_text_term(1, 15, "Something went wrong...", colors.red, colors.black)
-    draw_text_term(1, (depPrintStartY + 3), "Press enter to return to main menu.", colors.yellow, colors.black)
-    wait = read()
-    start()
-  end
+	--reboot after install
+	if progInstallSuccess == true and depInstallSuccess == true then
+		draw_text_term(1, 16, "Press enter to reboot", colors.gray, colors.black)
+		wait = read()
+		os.reboot()
+	elseif progInstallSuccess == true then
+		draw_text_term(1, 16, "Press enter to reboot", colors.gray, colors.black)
+		wait = read()
+		os.reboot()
+	else
+		draw_text_term(1, 15, "Something went wrong...", colors.red, colors.black)
+		draw_text_term(1, (depPrintStartY + 3), "Press enter to return to main menu.", colors.yellow, colors.black)
+		wait = read()
+		start()
+	end
 end
 
 function selectProgram()
-  term.clear()
-  menu_bars()
-  maxNum = tablelength(programs)
-  optionStartY = 5
-  draw_text_term(1, 4, "What would you like to install?", colors.yellow, colors.black)
-  for i, p in ipairs(programs) do
-    draw_text_term(3, optionStartY, i .. " - " .. p.displayName, colors.white, colors.black)
-    optionStartY = optionStartY + 1
-    i = i + 1
-  end
-  draw_text_term(1, optionStartY, "Enter a number:", colors.yellow, colors.black)
-  optionStartY = optionStartY + 1
-  term.setCursorPos(1, optionStartY)
-  term.setTextColor(colors.white)
-  input = read()
-  if tonumber(input) <= (maxNum) then
-    for i, p in ipairs(programs) do
-      if tonumber(input) == i then
-        install(p.fileName, p.Git)
-      end
-    end
-  else
-    draw_text_term(1, 12, "please enter a valid number between 1 and 4.", colors.red, colors.black)
-    sleep(1)
-    start()
-  end
-  start()
+	term.clear()
+	menu_bars()
+	maxNum = tablelength(programs)
+	optionStartY = 5
+	draw_text_term(1, 4, "What would you like to install?", colors.yellow, colors.black)
+	for i, p in ipairs(programs) do
+		draw_text_term(3, optionStartY, i .. " - " .. p.displayName, colors.white, colors.black)
+		optionStartY = optionStartY + 1
+		i = i + 1
+		formatOption = i
+	end
+	draw_text_term(3, optionStartY, formatOption .. " - " .. "Format computer", colors.white, colors.black)
+	optionStartY = optionStartY + 1
+	draw_text_term(1, optionStartY, "Enter a number:", colors.yellow, colors.black)
+	optionStartY = optionStartY + 1
+	term.setCursorPos(1, optionStartY)
+	term.setTextColor(colors.white)
+	input = read()
+	if tonumber(input) <= (maxNum) then
+		for i, p in ipairs(programs) do
+			if tonumber(input) == i then
+				install(p.fileName, p.url)
+			end
+		end
+	elseif tonumber(input) == formatOption then
+		formatComputer()
+	else
+		draw_text_term(1, 16, "Please enter a valid number!", colors.red, colors.black)
+		sleep(2)
+		start()
+	end
+	start()
 end
 
 --start the main loop
 function start()
-  selectProgram()
+	selectProgram()
 end
 
 start()
