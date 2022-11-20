@@ -83,14 +83,44 @@ function createBackup(backupDir, filePath, fileName)
 	end
 end
 
+--Returns table length as an integer.
+function tablelength(table)
+	local count = 0
+	for _ in pairs(table) do
+		count = count + 1
+	end
+	return count
+end
+
+--Splits a string into a table.
+function splitString(inputstr, sep)
+	if sep == nil then
+		sep = "%s"
+	end
+	local t = {}
+	for str in string.gmatch(inputstr, "([^" .. sep .. "]+)") do
+		table.insert(t, str)
+	end
+	return t
+end
+
 --Formats the computer
 function formatComputer()
+	currRunningProg = shell.getRunningProgram()
+	isTempRun = string.find(currRunningProg, ".temp.")
+	if isTempRun ~= nil then
+		local stringSplit = splitString(currRunningProg, ".")
+		runningProgName = stringSplit[-1]
+	else
+		local stringSplit = splitString(currRunningProg, "/")
+		runningProgName = stringSplit[-1]
+	end
 	term.clear()
 	draw_text_term(1, 1, "Getting list of files...", colors.yellow, colors.black)
 	local currFiles = fs.list("/")
 	sleep(1)
 	for i, currfile in pairs(currFiles) do
-		if currfile ~= "rom" then
+		if (currfile ~= "rom") and (currfile ~= runningProgName) then
 			fs.delete(currfile)
 			draw_text_term(1, (i + 1), "Deleted: " .. currfile, colors.red, colors.black)
 			sleep(0.5)
@@ -100,15 +130,6 @@ function formatComputer()
 	draw_text_term(1, 16, "Press enter to reboot", colors.gray, colors.black)
 	wait = read()
 	os.reboot()
-end
-
---Returns table length as an integer.
-function tablelength(table)
-	local count = 0
-	for _ in pairs(table) do
-		count = count + 1
-	end
-	return count
 end
 
 --Installs a program, its dependencies, and manages backups.
