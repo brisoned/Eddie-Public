@@ -15,11 +15,13 @@ programs = {
   },
   [2] = {
     ["Git"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp.lua",
+    ["dirName"] = "WPP",
     ["fileName"] = "wpp.lua",
     ["displayName"] = "WPP Master Computer"
   },
   [3] = {
     ["Git"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp_remote",
+    ["dirName"] = "WPP_REMOTE",
     ["fileName"] = "wpp_remote.lua",
     ["displayName"] = "WPP Remote Computer"
   }
