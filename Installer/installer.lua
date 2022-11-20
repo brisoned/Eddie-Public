@@ -26,7 +26,7 @@ programs = {
 		["makeStartup"] = false
 	},
 	[3] = {
-		["url"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp_remote",
+		["url"] = "https://raw.githubusercontent.com/brisoned/Eddie-Public/main/WPP/wpp_remote",
 		["dirName"] = "WPP_REMOTE",
 		["fileName"] = "wpp_remote.lua",
 		["displayName"] = "WPP Remote Computer",
