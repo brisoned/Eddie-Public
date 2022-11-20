@@ -118,12 +118,12 @@ function formatComputer()
 	local currFiles = fs.list("/")
 	sleep(1)
 	for i, currfile in pairs(currFiles) do
+		i = i + 1
 		isInstaller = string.find(currfile, "nstaller")
 		if (currfile ~= "rom") and (isInstaller == nil) then
 			fs.delete(currfile)
-			draw_text_term(1, (i + 1), "Deleted: " .. currfile, colors.red, colors.black)
+			draw_text_term(1, i, "Deleted: " .. currfile, colors.red, colors.black)
 			sleep(0.5)
-			i = i + 1
 		end
 	end
 	draw_text_term(1, 16, "Press enter to reboot", colors.gray, colors.black)
@@ -132,7 +132,7 @@ function formatComputer()
 end
 
 --Installs a program, its dependencies, and manages backups.
-function install(program, link)
+function install(program, link, startup)
 	currDeps = nil
 	term.clear()
 	term.setBackgroundColor(colors.black)
@@ -176,7 +176,7 @@ function install(program, link)
 
 	--install prgram
 	progInstallSuccess = shell.run("wget", link, currLitPath)
-	if fs.exists(currLitPath) then
+	if fs.exists(currLitPath) and (startup == true) then
 		local f = fs.open("startup", fs.exists("startup") and "a" or "w")
 		local l2 = "local id = multishell.launch({ shell = shell, require = require}, " .. "'" .. currLitPath .. "'" .. ")"
 		local l3 = "multishell.setTitle(id, " .. "'" .. currLitPath .. "'" .. ")"
@@ -301,7 +301,7 @@ function selectProgram()
 	if tonumber(input) <= (maxNum) then
 		for i, p in ipairs(programs) do
 			if tonumber(input) == i then
-				install(p.fileName, p.url)
+				install(p.fileName, p.url, p.makeStartup)
 			end
 		end
 	elseif tonumber(input) == formatOption then
