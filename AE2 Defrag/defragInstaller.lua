@@ -187,6 +187,10 @@ function install(program, programGit)
     draw_text_term(1, 16, "Press enter to reboot", colors.gray, colors.black)
     wait = read()
     os.reboot()
+  elseif progInstallSuccess == true then
+    draw_text_term(1, 16, "Press enter to reboot", colors.gray, colors.black)
+    wait = read()
+    os.reboot()
   else
     draw_text_term(1, 15, "Something went wrong...", colors.red, colors.black)
     draw_text_term(1, (depPrintStartY + 3), "Press enter to return to main menu.", colors.yellow, colors.black)
