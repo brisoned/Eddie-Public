@@ -1,3 +1,54 @@
+-------------------------BRISONED'S INSTALLER SUPPORT--------------------------
+
+--AE2 Defrag Install Directory
+programRootPath = "AE2_Defrag"
+relativeDepPath = programRootPath .. "/Dependencies/"
+
+--A list of indexed dependencies.
+dependencies = {
+  [1] = {
+    ["Git"] = "https://raw.githubusercontent.com/brisoned/Eddie-Public/main/AE2%20Defrag/touchpoint.lua",
+    ["fileName"] = "touchpoint.lua",
+    ["displayName"] = "Touchpoint API"
+  }
+}
+
+--Making dependency folder if it does not exists
+print("Checking for dependency folder...")
+if fs.exists(relativeDepPath) then
+  print("Folder exists.")
+  print(" ")
+else
+  fs.makeDir(relativeDepPath)
+  print("Dependencies folder created.")
+  print(" ")
+end
+
+--Verifying dependencies are installed
+print("Verifying dependencies...")
+for i, dependency in ipairs(dependencies) do
+  local literalDepPath = relativeDepPath .. dependency.fileName
+  if fs.exists(literalDepPath) then
+    print(dependency.fileName .. " Exists...")
+  else
+    installSuccess = shell.run("wget", dependency.Git, literalDepPath)
+    if installSuccess == true then
+      print(dependency.displayName .. " installed")
+    else
+      print(dependency.displayName .. " Failed!")
+      fs.delete(relativeDepPath)
+      print("Removed all dependencies.")
+      print("Update your dependencies and try again.")
+      print("Press enter to reboot.")
+      wait = read()
+      os.reboot()
+    end
+  end
+end
+
+
+-----------------------BRISONED'S INSTALLER SUPPORT-----------------------------
+
 -- Config
 maxUsedSlotsPerCell = 55
 paddingPercent = 100

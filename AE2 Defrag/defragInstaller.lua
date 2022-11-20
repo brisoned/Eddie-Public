@@ -1,31 +1,27 @@
---Main program git. Both variables are required for this script to function.
-mainGit = "https://raw.githubusercontent.com/brisoned/Eddie-Public/main/AE2%20Defrag/defrag.lua"
-mainName = "defrag.lua"
-
---Startup git. it is assumed this will be called startup or startup.lua.
-startupGit = ""
-
---Dependency gits. Each dependency requires a Git variable and a fileName variable.
-dependencies = {
-  touchpoint = {
-    Git = "https://raw.githubusercontent.com/brisoned/Eddie-Public/main/AE2%20Defrag/touchpoint.lua",
-    fileName = "touchpoint.lua"
-  }
-}
-
---Optional gits. Each optional install requires a Git variable and a fileName variables.
-extras = {
-  ["wpp"] = {
+--Progams to list on the install menu. You will need to include any dependencies.
+programs = {
+  [1] = {
+    ["Git"] = "https://raw.githubusercontent.com/brisoned/Eddie-Public/main/AE2%20Defrag/defrag.lua",
+    ["dirName"] = "AE2_Defrag",
+    ["fileName"] = "defrag.lua",
+    ["displayName"] = "AE2 Defrag",
+    ["dependencies"] = {
+      [1] = {
+        ["Git"] = "https://raw.githubusercontent.com/brisoned/Eddie-Public/main/AE2%20Defrag/touchpoint.lua",
+        ["fileName"] = "touchpoint.lua",
+        ["displayName"] = "Touchpoint API"
+      }
+    }
+  },
+  [2] = {
     ["Git"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp.lua",
     ["fileName"] = "wpp.lua",
-    ["displayName"] = "WPP Master Computer",
-    ["id"] = 1
+    ["displayName"] = "WPP Master Computer"
   },
-  ["wpp_remote"] = {
+  [3] = {
     ["Git"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp_remote",
     ["fileName"] = "wpp_remote.lua",
-    ["displayName"] = "WPP Remote Computer",
-    ["id"] = 2
+    ["displayName"] = "WPP Remote Computer"
   }
 }
 
@@ -83,17 +79,17 @@ function installFailed(file, x, y)
 end
 
 --Delete backups
-function deleteBackup(file)
-  if fs.exists("/backups/" .. file .. "_old") then
-    fs.delete("/backups/" .. file .. "_old")
+function deleteBackup(backupDir, file)
+  if fs.exists(backupDir .. file .. "_old") then
+    fs.delete(backupDir .. file .. "_old")
   end
 end
 
 --Create Backups
-function createBackup(file)
-  if fs.exists(file) then
-    fs.copy(file, "/backups/" .. file .. "_old")
-    fs.delete(file)
+function createBackup(backupDir, litPath, file)
+  if fs.exists(litPath) then
+    fs.copy(litPath, backupDir .. file .. "_old")
+    fs.delete(litPath)
   end
 end
 
@@ -107,7 +103,7 @@ function tablelength(table)
 end
 
 --Installs a program and its dependencies
-function install(program, rawGit)
+function install(program, programGit)
   term.clear()
   menu_bars()
 
@@ -118,116 +114,105 @@ function install(program, rawGit)
 
   -----------------Install control program---------------
 
-  --Make backups folder if it doesn't exist
-  if fs.exists("backups") == false then
-    fs.makeDir("backups")
+  --Get variables for current program install
+  for i, p in ipairs(programs) do
+    if p.fileName == program then
+      currRootDir = p.dirName
+      currBackupDir = p.dirName .. "/backups/"
+      currDepDir = p.dirName .. "/dependencies/"
+      currLitPath = p.dirName .. "/" .. p.fileName
+      if p.dependencies ~= nil or p.dependencies ~= "" then
+        currDeps = p.dependencies
+      end
+    end
   end
 
   --delete any old backups
-  deleteBackup(program)
+  deleteBackup(currBackupDir, program)
 
   --backup current program
-  createBackup(program)
+  createBackup(currBackupDir, currLitPath, program)
+
+  if currDeps ~= nil or currDeps ~= "" then
+    --delete old dependency backups
+    for i, d in ipairs(currDeps) do
+      deleteBackup(currBackupDir, d.fileName)
+    end
+
+    --create new dependency backups
+    for i, d in ipairs(currDeps) do
+      currDepLitPath = currDepDir .. "/" .. d.fileName
+      createBackup(currBackupDir, currDepLitPath, d.fileName)
+    end
+  end
 
   --install prgram
-  if program ~= mainName then
-    for _, extra in pairs(extras) do
-      if program == extra.fileName then
-        shell.run("wget", extra.Git, extra.fileName)
-      end
-    end
+  progInstallSuccess = shell.run("wget", programGit, currLitPath)
+  if progInstallSuccess == true then
+    draw_text_term(1, 1, program .. ":" .. " Success!", colors.lime, colors.black)
   else
-    shell.run("wget", rawGit, mainName)
-  end
-  term.clear()
-
-  sleep(0.5)
-
-  term.setCursorPos(1, 8)
-
-  --delete any old startup backups
-  deleteBackup("startup")
-
-  --backup/delete startup script
-  createBackup("startup")
-
-  --Install startup script
-  --shell.run("wget",startupGit)
-  --term.clear()
-
-  --delete an old dependency backups
-  for _, dependency in pairs(dependencies) do
-    deleteBackup(dependency.fileName)
-  end
-
-  --backup/delete dependencies
-  for _, dependency in pairs(dependencies) do
-    createBackup(dependency.fileName)
-  end
-
-  --testing for successful installs
-  failed = false
-  if program == mainName then
-    --Install dependency files
-    for _, dependency in pairs(dependencies) do
-      shell.run("wget", dependency.Git, dependency.fileName)
-      term.clear()
-    end
-    --test for successful install of main program
-    failed = installFailed(program, 1, 2)
-    --test for successful install of dependencies
-    startY = 3
-    for _, dependency in pairs(dependencies) do
-      failed = installFailed(dependency.fileName, 1, startY)
-      startY = startY + 1
-    end
-  else
-    --test for successful install of optional programs
-    startY = 2
-    for _, extra in pairs(extras) do
-      if program == extra.fileName then
-        failed = installFailed(extra.fileName, 1, startY)
-      end
-      startY = startY + 1
-    end
-  end
-
-  --if failed go back to start, if not reboot.
-  if failed == true then
-    draw_text_term(1, 16, "Press Enter to return to menu...", colors.gray, colors.black)
+    draw_text_term(1, 1, program .. ":" .. " Failed!", colors.red, colors.black)
+    draw_text_term(1, 2, "Rolling back install...", colors.yellow, colors.black)
+    os.sleep(1)
+    fs.delete(currRootDir)
+    draw_text_term(1, 3, "Press enter to return to main menu.", colors.red, colors.black)
     wait = read()
     start()
-  else
-    draw_text_term(1, 16, "Press Enter to reboot...", colors.gray, colors.black)
+  end
+
+  --install dependencies
+  if currDeps ~= nil or currDeps ~= "" then
+    depPrintStartY = 4
+    for i, d in ipairs(currDeps) do
+      currDepLitPath = currDepDir .. "/" .. d.fileName
+      depInstallSuccess = shell.run("wget", d.Git, currDepLitPath)
+      if depInstallSuccess == true then
+        draw_text_term(1, depPrintStartY, d.fileName .. ":" .. " Success!", colors.lime, colors.black)
+      else
+        draw_text_term(1, (depPrintStartY + 1), d.fileName .. ":" .. " Failed!", colors.red, colors.black)
+        draw_text_term(1, (depPrintStartY + 2), "Rolling back install...", colors.yellow, colors.black)
+        os.sleep(1)
+        fs.delete(currRootDir)
+        draw_text_term(1, (depPrintStartY + 3), "Press enter to return to main menu.", colors.yellow, colors.black)
+        wait = read()
+        start()
+      end
+    end
+  end
+
+  --reboot after install
+  if progInstallSuccess == true and depInstallSuccess == true then
+    draw_text_term(1, 16, "Press enter to reboot", colors.gray, colors.black)
     wait = read()
-    shell.run("reboot")
+    os.reboot()
+  else
+    draw_text_term(1, 15, "Something went wrong...", colors.red, colors.black)
+    draw_text_term(1, (depPrintStartY + 3), "Press enter to return to main menu.", colors.yellow, colors.black)
+    wait = read()
+    start()
   end
 end
 
 function selectProgram()
   term.clear()
   menu_bars()
-  maxNum = tablelength(extras)
-  optionalStartY = 6
+  maxNum = tablelength(programs)
+  optionStartY = 5
   draw_text_term(1, 4, "What would you like to install?", colors.yellow, colors.black)
-  draw_text_term(3, 5, "1 - AE2 Defrag", colors.white, colors.black)
-  for i, extra in ipairs(extras) do
-    currentIndex = extra.identifier + 1
-    draw_text_term(3, optionalStartY, currentIndex .. " - " .. extra.displayName, colors.white, colors.black)
-    optionalStartY = optionalStartY + 1
+  for i, p in ipairs(programs) do
+    draw_text_term(3, optionStartY, i .. " - " .. p.displayName, colors.white, colors.black)
+    optionStartY = optionStartY + 1
+    i = i + 1
   end
-  draw_text_term(1, optionalStartY, "Enter a number:", colors.yellow, colors.black)
-  optionalStartY = optionalStartY + 1
-  term.setCursorPos(1, optionalStartY)
+  draw_text_term(1, optionStartY, "Enter a number:", colors.yellow, colors.black)
+  optionStartY = optionStartY + 1
+  term.setCursorPos(1, optionStartY)
   term.setTextColor(colors.white)
   input = read()
-  if input == "1" then
-    install(mainName, mainGit)
-  elseif tonumber(input) <= (maxNum + 1) then
-    for i, extra in ipairs(extras) do
-      currentIndex = extra.id + 1
-      if tonumber(input) == currentIndex then
-        install(extra.fileName, extra.Git)
+  if tonumber(input) <= (maxNum) then
+    for i, p in ipairs(programs) do
+      if tonumber(input) == i then
+        install(p.fileName, p.Git)
       end
     end
   else
