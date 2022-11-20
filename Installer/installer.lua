@@ -1,10 +1,15 @@
---Progams to list on the install menu. url, dirName, fileName, and displayName are required. dependencies is optional. Make sure to follow the formatting.
+--Progams to list on the install menu.
+--url, dirName, fileName, displayName, and makeStartup are required.
+--dependencies is for additional files you would like to install with the program.
+--makeStartup will make a startup file if true that opens the main program in a shell tab at startup.
+--Make sure to follow the formatting.
 programs = {
 	[1] = {
 		["url"] = "https://raw.githubusercontent.com/brisoned/Eddie-Public/main/AE2%20Defrag/defrag.lua",
 		["dirName"] = "AE2_Defrag",
 		["fileName"] = "defrag.lua",
 		["displayName"] = "AE2 Defrag",
+		["makeStartup"] = false,
 		["dependencies"] = {
 			[1] = {
 				["url"] = "https://raw.githubusercontent.com/brisoned/Eddie-Public/main/AE2%20Defrag/touchpoint.lua",
@@ -17,13 +22,15 @@ programs = {
 		["url"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp.lua",
 		["dirName"] = "WPP",
 		["fileName"] = "wpp.lua",
-		["displayName"] = "WPP Master Computer"
+		["displayName"] = "WPP Master Computer",
+		["makeStartup"] = false
 	},
 	[3] = {
 		["url"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp_remote",
 		["dirName"] = "WPP_REMOTE",
 		["fileName"] = "wpp_remote.lua",
-		["displayName"] = "WPP Remote Computer"
+		["displayName"] = "WPP Remote Computer",
+		["makeStartup"] = true
 	}
 }
 
@@ -128,10 +135,9 @@ end
 function install(program, link)
 	currDeps = nil
 	term.clear()
+	term.setBackgroundColor(colors.black)
 	term.setTextColor(colors.white)
 	sleep(0.5)
-
-	-----------------Install control program---------------
 
 	--Get variables for current program install
 	for i, p in ipairs(programs) do
@@ -149,7 +155,7 @@ function install(program, link)
 		end
 	end
 
-	--delete any old backups
+	--delete any old program backups
 	deleteBackup(currBackupDir, program)
 
 	--backup current program
@@ -170,6 +176,13 @@ function install(program, link)
 
 	--install prgram
 	progInstallSuccess = shell.run("wget", link, currLitPath)
+	if fs.exists(currLitPath) then
+		local f = fs.open("startup", fs.exists("startup") and "a" or "w")
+		local l1 = "local id = multishell.launch({ shell = shell, require = require}, " .. currLitPath .. ")"
+		local l2 = "multishell.setTitle(id, " .. currLitPath .. ")"
+		fs.writeLine(l1)
+		fs.writeLine(l2)
+	end
 	sleep(0.5)
 	term.clear()
 
