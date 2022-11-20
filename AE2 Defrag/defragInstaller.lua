@@ -178,7 +178,7 @@ function install(program, programGit)
   end
 
   --validate dependencies install
-  depPrintStartY = 6
+  depPrintStartY = 3
   if depInstallSuccess == true then
     draw_text_term(1, depPrintStartY, "Dependencies: Success!", colors.lime, colors.black)
   else
