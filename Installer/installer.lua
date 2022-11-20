@@ -128,8 +128,6 @@ end
 function install(program, link)
 	currDeps = nil
 	term.clear()
-	menu_bars()
-	term.setCursorPos(1, 5)
 	term.setTextColor(colors.white)
 	sleep(0.5)
 
@@ -217,36 +215,38 @@ function install(program, link)
 	end
 
 	--validate dependencies install
-	depPrintStartY = 2
-	if depInstallSuccess == true then
-		draw_text_term(1, depPrintStartY, "Dependencies: Success!", colors.lime, colors.black)
-	else
-		draw_text_term(1, depPrintStartY, "Dependencies: Failed!", colors.red, colors.black)
-		draw_text_term(1, (depPrintStartY + 1), "Rolling back install...", colors.yellow, colors.black)
-		sleep(1)
-		if fs.exists(currBackupDir) then
-			if fs.exists(currBackupDir .. program .. "_old") then
-				restoreFiles(currBackupDir, currLitPath, program)
-				if fs.exists(currDepDir) then
-					for i, d in ipairs(dependencies) do
-						if fs.exists(currDepDir .. d.fileName .. "_old") then
-							currDepLitPath = currDepDir .. d.fileName
-							restoreFiles(currBackupDir, currDepLitPath, d.fileName)
+	if currDeps ~= nil then
+		depPrintStartY = 2
+		if depInstallSuccess == true then
+			draw_text_term(1, depPrintStartY, "Dependencies: Success!", colors.lime, colors.black)
+		else
+			draw_text_term(1, depPrintStartY, "Dependencies: Failed!", colors.red, colors.black)
+			draw_text_term(1, (depPrintStartY + 1), "Rolling back install...", colors.yellow, colors.black)
+			sleep(1)
+			if fs.exists(currBackupDir) then
+				if fs.exists(currBackupDir .. program .. "_old") then
+					restoreFiles(currBackupDir, currLitPath, program)
+					if fs.exists(currDepDir) then
+						for i, d in ipairs(dependencies) do
+							if fs.exists(currDepDir .. d.fileName .. "_old") then
+								currDepLitPath = currDepDir .. d.fileName
+								restoreFiles(currBackupDir, currDepLitPath, d.fileName)
+							end
 						end
 					end
+					draw_text_term(1, (depPrintStartY + 2), "Files restored to previous version.", colors.yellow, colors.black)
+				else
+					fs.delete(currRootDir)
+					draw_text_term(1, (depPrintStartY + 2), "Files deleted.", colors.red, colors.black)
 				end
-				draw_text_term(1, (depPrintStartY + 2), "Files restored to previous version.", colors.yellow, colors.black)
 			else
 				fs.delete(currRootDir)
 				draw_text_term(1, (depPrintStartY + 2), "Files deleted.", colors.red, colors.black)
 			end
-		else
-			fs.delete(currRootDir)
-			draw_text_term(1, (depPrintStartY + 2), "Files deleted.", colors.red, colors.black)
+			draw_text_term(1, 16, "Press enter to return to main menu.", colors.yellow, colors.black)
+			wait = read()
+			start()
 		end
-		draw_text_term(1, 16, "Press enter to return to main menu.", colors.yellow, colors.black)
-		wait = read()
-		start()
 	end
 
 	--reboot after install
