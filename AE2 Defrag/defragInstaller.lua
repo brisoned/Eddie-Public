@@ -123,7 +123,7 @@ function install(program, programGit)
       currBackupDir = p.dirName .. "/backups/"
       currDepDir = p.dirName .. "/dependencies/"
       currLitPath = p.dirName .. "/" .. p.fileName
-      if p.dependencies ~= nil or p.dependencies ~= "" then
+      if p.dependencies ~= nil then
         currDeps = p.dependencies
       end
     end
@@ -135,7 +135,7 @@ function install(program, programGit)
   --backup current program
   createBackup(currBackupDir, currLitPath, program)
 
-  if currDeps ~= nil or currDeps ~= "" then
+  if currDeps ~= nil then
     --delete old dependency backups
     for i, d in ipairs(currDeps) do
       deleteBackup(currBackupDir, d.fileName)
@@ -163,7 +163,7 @@ function install(program, programGit)
   end
 
   --install dependencies
-  if currDeps ~= nil or currDeps ~= "" then
+  if currDeps ~= nil then
     depPrintStartY = 4
     for i, d in ipairs(currDeps) do
       currDepLitPath = currDepDir .. "/" .. d.fileName
@@ -193,6 +193,7 @@ function install(program, programGit)
     wait = read()
     start()
   end
+  currDeps = nil
 end
 
 function selectProgram()
