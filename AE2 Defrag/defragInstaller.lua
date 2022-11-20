@@ -110,7 +110,7 @@ function install(program, programGit)
   term.clear()
   menu_bars()
 
-  draw_text_term(1, 3, "Installing " .. program .. "...", colors.yellow, colors.black)
+  draw_text_term(1, 1, "Installing " .. program .. "...", colors.yellow, colors.black)
   term.setCursorPos(1, 5)
   term.setTextColor(colors.white)
   sleep(0.5)
@@ -151,36 +151,44 @@ function install(program, programGit)
 
   --install prgram
   progInstallSuccess = shell.run("wget", programGit, currLitPath)
+  sleep(0.5)
+  term.clear()
+
+  --install dependencies
+  if currDeps ~= nil then
+    for i, d in ipairs(currDeps) do
+      currDepLitPath = currDepDir .. "/" .. d.fileName
+      depInstallSuccess = shell.run("wget", d.Git, currDepLitPath)
+    end
+  end
+  sleep(0.5)
+  term.clear()
+
+  --validate program install
   if progInstallSuccess == true then
-    draw_text_term(1, 1, program .. ":" .. " Success!", colors.lime, colors.black)
+    draw_text_term(1, 2, program .. ":" .. " Success!", colors.lime, colors.black)
   else
-    draw_text_term(1, 1, program .. ":" .. " Failed!", colors.red, colors.black)
-    draw_text_term(1, 2, "Rolling back install...", colors.yellow, colors.black)
-    os.sleep(1)
+    draw_text_term(1, 3, program .. ":" .. " Failed!", colors.red, colors.black)
+    draw_text_term(1, 4, "Rolling back install...", colors.yellow, colors.black)
+    sleep(1)
     fs.delete(currRootDir)
-    draw_text_term(1, 3, "Press enter to return to main menu.", colors.red, colors.black)
+    draw_text_term(1, 5, "Press enter to return to main menu.", colors.red, colors.black)
     wait = read()
     start()
   end
 
-  --install dependencies
-  if currDeps ~= nil then
-    depPrintStartY = 4
-    for i, d in ipairs(currDeps) do
-      currDepLitPath = currDepDir .. "/" .. d.fileName
-      depInstallSuccess = shell.run("wget", d.Git, currDepLitPath)
-      if depInstallSuccess == true then
-        draw_text_term(1, depPrintStartY, d.fileName .. ":" .. " Success!", colors.lime, colors.black)
-      else
-        draw_text_term(1, (depPrintStartY + 1), d.fileName .. ":" .. " Failed!", colors.red, colors.black)
-        draw_text_term(1, (depPrintStartY + 2), "Rolling back install...", colors.yellow, colors.black)
-        os.sleep(1)
-        fs.delete(currRootDir)
-        draw_text_term(1, (depPrintStartY + 3), "Press enter to return to main menu.", colors.yellow, colors.black)
-        wait = read()
-        start()
-      end
-    end
+  --validate dependencies install
+  depPrintStartY = 6
+  if depInstallSuccess == true then
+    draw_text_term(1, depPrintStartY, "Dependencies: Success!", colors.lime, colors.black)
+  else
+    draw_text_term(1, (depPrintStartY + 1), "Dependencies: Failed!", colors.red, colors.black)
+    draw_text_term(1, (depPrintStartY + 2), "Rolling back install...", colors.yellow, colors.black)
+    sleep(1)
+    fs.delete(currRootDir)
+    draw_text_term(1, (depPrintStartY + 3), "Press enter to return to main menu.", colors.yellow, colors.black)
+    wait = read()
+    start()
   end
 
   --reboot after install
