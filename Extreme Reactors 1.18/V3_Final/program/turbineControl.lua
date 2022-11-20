@@ -139,7 +139,7 @@ function startAutoMode()
     --Enable reactor and turbines
     allReactorsOn()
     allTurbinesOn()
-    print("al")
+  --  print("before SpeedMaxin LINE 142")
     maintainSpeedMaxInAuto()
 
     --Reset terminal
@@ -213,9 +213,18 @@ function getEnergy()
     local energyStore = 0
 
     for i = 0, amountCapacitors, 1 do
+        local stored = capacitors[i]:energy()
+        if stored then 
         local stored = math.floor(capacitors[i]:energy())
+        else
+        local stored = 0
+        end
+        if energyStore then
         energyStore = energyStore + stored
-    end
+         else
+          energyStore = 0 + stored
+      end  
+     end
 
     return energyStore
 end
@@ -618,11 +627,13 @@ end
 --Checks the current energy level and controlls turbines/reactor
 --based on user settings (reactorOn, reactorOff)
 function checkEnergyLevel()
-    printStatsAuto(currStat)
+   -- print("in checkEnergylevel 620")
+   -- printStatsAuto(currStat)
+  --  print("after printStats Auto 623")
     --Level > user setting (default: 90%)
     if getEnergyPer() >= reactorOffAt then
         --Level < user setting (default: 50%)
-        print("Energy >= reactorOffAt")
+     --   print("Energy >= reactorOffAt")
         if turbineOnOff == "on" then
             allTurbinesOn()
         elseif turbineOnOff == "off" then
@@ -632,7 +643,8 @@ function checkEnergyLevel()
     elseif getEnergyPer() <= reactorOnAt then
         allReactorsOn()
         for i = 0, amountTurbines do
-           -- maintainSpeedMaxInAuto()
+            --turbines[i]:setSteamIn(targetSteam)
+            --maintainSpeedMaxInAuto()
             if turbines[i]:rotorSpeed() < turbineTargetSpeed * 0.98 then
                 turbines[i]:setCoils(false)
             end
@@ -982,7 +994,9 @@ function clickEvent()
     while true do
         --refresh screen
         if overallMode == "auto" then
+           -- print("in clickEvent")
             checkEnergyLevel()
+           -- print("going into maintain speed func")
             maintainSpeedMaxInAuto()
         elseif overallMode == "manual" then
             printStatsMan(currStat)
@@ -1011,32 +1025,45 @@ end
 function maintainSpeedMaxInAuto()
     for i = 0, amountTurbines, 1 do
         local lTurbine = turbines[i]
-        if not currentRPMold then
-            currentRPMold = 0
-        else
-            currentRPMold = math.floor(currentRPM)
-        end
-        currentRPM = lTurbine:rotorSpeed()
-        staticRPMsteam = 0
-        staticcount = 0
-        if currentRPMold == currentRPM and staticcount <2 and staticRPMsteam == 0 then
-            --Count static values to find steam amount to keep turbine stable at TargetSpeed
-            staticcount = staticcount + 1
-        elseif currentRPMold == currentRPM and staticcount >=2 and staticRPMsteam == 0 then
-            -- Static Value most likely found.
-            staticRPMsteam = lTurbine:steamIn()
+                if not currentRPMold then
+                currentRPMold = 0
+                else
+                currentRPMold = math.floor(currentRPM)
+                end 
+                --currentRPMold = currentRPM
+                currRPM = lTurbine:rotorSpeed()
+                if not currRPM then
+                currentRPM = 0
+                else
+                currentRPM = math.floor(currRPM)
+                end
+                --currentRPMold = currentRPM
+                staticRPMsteam = 0
+                staticcount = 0
+       -- print("Get Turbine Speed" .. "old value:" .. currentRPMold .. "new value:" .. currentRPM)
+        if currentRPMold == currentRPM and staticcount <2 and staticRPMsteam == 0 then 
+       -- print("Potential Static Value Found")
+        staticcount = staticcount + 1
+        elseif currentRPMold == currentRPM and staticcount >=2 and staticRPMSteam == 0 then
+       -- print("Setting Static Steam Value!")
+        staticRPMsteam = lTurbine:steamIn()
         end
         if currentRPM < _G.turbineTargetSpeed+20 and currentRPM > _G.turbineTargetSpeed-20 then
-           if staticRPMsteam ~=  0 then
-            lTurbine:setSteamIn(staticRPMsteam)
-           end
+           -- do nothing
+            -- speed iso good
+            if staticRPMsteam ~= 0 then
+                print("Turbine within bounds setting static value")
+                lTurbine:setSteamIn(staticRPMsteam)
+            end
         elseif currentRPM < _G.turbineTargetSpeed+20 then
             local newSteamAmount = lTurbine:steamIn() + lTurbine:decrementAmount()
             lTurbine:setSteamIn(newSteamAmount)
-        else
+         else
              --while currentRPM > _G.turbineTargetSpeed do
                 local newSteamAmount = lTurbine:steamIn() - lTurbine:decrementAmount()
+             --   print("Steam Amount" .. newSteamAmount)
                 if(newSteamAmount >= 0) then
+    
                     lTurbine:setSteamIn(newSteamAmount)
                 else
                     --cant go any lower will be lower then 0 and cant have that
@@ -1050,6 +1077,7 @@ end
 --displays all info on the screen (auto mode)
 function printStatsAuto(turbine)
     --refresh current turbine
+    print("in printStatsAuto 1038")
     currStat = turbine
 
     --toggles turbine buttons if pressed (old button off, new button on)
@@ -1205,9 +1233,9 @@ function getReactorInfo()
     local fuelCons = tostring(getFuelUsed())
     local fuelCons2 = string.sub(fuelCons, 0, 4)
     reactorInfo.fuelConsumed = fuelCons2;
-    
     if not rfGen or not getFuelUsed then eff = 0 else eff = math.floor(rfGen / getFuelUsed()) end
-
+        
+    --local eff = math.floor(rfGen / getFuelUsed())
     reactorInfo.efficiency = math.floor(eff/1000)
     reactorInfo.rfProduced = rfGen;
 
