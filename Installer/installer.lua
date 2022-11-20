@@ -178,10 +178,10 @@ function install(program, link)
 	progInstallSuccess = shell.run("wget", link, currLitPath)
 	if fs.exists(currLitPath) then
 		local f = fs.open("startup", fs.exists("startup") and "a" or "w")
-		local l1 = "local id = multishell.launch({ shell = shell, require = require}, " .. currLitPath .. ")"
-		local l2 = "multishell.setTitle(id, " .. currLitPath .. ")"
-		fs.writeLine(l1)
-		fs.writeLine(l2)
+		local l2 = "local id = multishell.launch({ shell = shell, require = require}, " .. "'" .. currLitPath .. "'" .. ")"
+		local l3 = "multishell.setTitle(id, " .. "'" .. currLitPath .. "'" .. ")"
+		f.writeLine(l1)
+		f.writeLine(l2)
 	end
 	sleep(0.5)
 	term.clear()
