@@ -106,6 +106,7 @@ end
 
 --Installs a program and its dependencies
 function install(program, programGit)
+  currDeps = nil
   term.clear()
   menu_bars()
 
@@ -197,7 +198,6 @@ function install(program, programGit)
     wait = read()
     start()
   end
-  currDeps = nil
 end
 
 function selectProgram()
