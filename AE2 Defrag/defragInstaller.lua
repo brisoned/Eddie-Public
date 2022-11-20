@@ -106,21 +106,13 @@ end
 
 --Formats the computer
 function formatComputer()
-	currRunningProg = shell.getRunningProgram()
-	isTempRun = string.find(currRunningProg, ".temp.")
-	if isTempRun ~= nil then
-		local stringSplit = splitString(currRunningProg, ".")
-		runningProgName = stringSplit[-1]
-	else
-		local stringSplit = splitString(currRunningProg, "/")
-		runningProgName = stringSplit[-1]
-	end
 	term.clear()
 	draw_text_term(1, 1, "Getting list of files...", colors.yellow, colors.black)
 	local currFiles = fs.list("/")
 	sleep(1)
 	for i, currfile in pairs(currFiles) do
-		if (currfile ~= "rom") and (currfile ~= runningProgName) then
+		isInstaller = string.find(currfile, "nstaller")
+		if (currfile ~= "rom") and (isInstaller == nil) then
 			fs.delete(currfile)
 			draw_text_term(1, (i + 1), "Deleted: " .. currfile, colors.red, colors.black)
 			sleep(0.5)
