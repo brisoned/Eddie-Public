@@ -3,14 +3,14 @@ maxUsedSlotsPerCell = 55
 paddingPercent = 100
 
 --wpp support
-wpp = require("AE2_Defrag/dependencies/wpp")
+wpp = require("AE2_Defrag/dependencies/wpp.lua")
 wpp.wireless.connect("defrag")
 
 --Wrap monitor
 monitor = peripheral.wrap("monitor_19")
 
 --load API
-os.loadAPI("AE2_Defrag/dependencies/touchpoint")
+os.loadAPI("AE2_Defrag/dependencies/touchpoint.lua")
 
 --Initialize button set
 t = touchpoint.new(monitor)
