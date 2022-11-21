@@ -3,7 +3,7 @@ maxUsedSlotsPerCell = 55
 paddingPercent = 100
 
 --wpp support
-wpp = require("wpp")
+wpp = require("AE2_Defrag/dependencies/wpp")
 wpp.wireless.connect("defrag")
 
 --Wrap monitor

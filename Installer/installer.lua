@@ -15,6 +15,11 @@ programs = {
 				["url"] = "https://raw.githubusercontent.com/brisoned/Eddie-Public/main/AE2%20Defrag/touchpoint.lua",
 				["fileName"] = "touchpoint.lua",
 				["displayName"] = "Touchpoint API"
+			},
+			[2] = {
+				["url"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp.lua",
+				["fileName"] = "wpp.lua",
+				["displayName"] = "WPP API",
 			}
 		}
 	},
