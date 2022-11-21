@@ -20,7 +20,7 @@ programs = {
 	},
 	[2] = {
 		["url"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp.lua",
-		["dirName"] = "WPP",
+		["dirName"] = "/",
 		["fileName"] = "wpp.lua",
 		["displayName"] = "WPP API",
 		["makeStartup"] = false
