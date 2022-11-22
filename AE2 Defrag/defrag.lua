@@ -12,12 +12,13 @@ wpp.wireless.connect("defrag")
 
 --Wrap monitor
 monitor = "wpp@defrag://19/monitor_19"
+preWrap = wpp.peripheral.wrap(monitor)
 
 --load API
 os.loadAPI("AE2_Defrag/dependencies/touchpoint.lua")
 
 --Initialize button set
-t = touchpoint.new(monitor)
+t = touchpoint.new(monitor, preWrap)
 
 --Add buttons to button set
 t:add("left", nil, 2, 2, 14, 11, colors.red, colors.lime)

@@ -23,10 +23,6 @@ THE SOFTWARE.
 --]]
 
 --wpp support needed for file.
-rootDir = "AE2_Defrag"
-shell.setDir(rootDir)
-wpp = require("dependencies/wpp")
-wpp.wireless.connect("defrag")
 
 local function setupLabel(buttonLen, minY, maxY, name)
 	local labelTable = {}
@@ -173,15 +169,10 @@ local Button = {
 	end,
 }
 
-function new(monSide)
-	if wpp ~= nil then
-		mon1 = monSide and wpp.peripheral.wrap(monSide) or term.current()
-	else
-		mon1 = monSide and peripheral.wrap(monSide) or term.current()
-	end
+function new(monSide, wrap)
 	local buttonInstance = {
 		side = monSide or "term",
-		mon = mon1,
+		mon = mon1 and wrap or term.current(),
 		buttonList = {},
 		clickMap = {},
 	}
