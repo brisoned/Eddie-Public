@@ -23,6 +23,8 @@ THE SOFTWARE.
 --]]
 
 --wpp support needed for file.
+rootDir = "AE2_Defrag"
+shell.setDir(rootDir)
 wpp = require("dependencies/wpp")
 wpp.wireless.connect("defrag")
 

@@ -11,7 +11,7 @@ wpp = require("dependencies/wpp")
 wpp.wireless.connect("defrag")
 
 --Wrap monitor
-monitor = peripheral.wrap("wpp@defrag://19/monitor_19")
+monitor = wpp.peripheral.wrap("wpp@defrag://19/monitor_19")
 
 --load API
 os.loadAPI("AE2_Defrag/dependencies/touchpoint.lua")
