@@ -1,11 +1,26 @@
--- Extreme Reactors Control by SeekerOfHonjo --
--- Original work by Thor_s_Crafter on https://github.com/ThorsCrafter/Reactor-and-Turbine-control-program -- 
--- Touchpoint API by Lyqyd - Slightly changed --
-
---Insert Elements and assign values
-optionList = textutils.unserialise(list)
-backgroundColor = tonumber(optionList["backgroundColor"])
-textColor = tonumber(optionList["textColor"])
+--[[
+The MIT License (MIT)
+ 
+Copyright (c) 2013 Lyqyd
+ 
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+ 
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+ 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+--]]
 
 local function setupLabel(buttonLen, minY, maxY, name)
 	local labelTable = {}
@@ -17,10 +32,10 @@ local function setupLabel(buttonLen, minY, maxY, name)
 	elseif type(name) == "string" then
 		local buttonText = string.sub(name, 1, buttonLen - 2)
 		if #buttonText < #name then
-			buttonText = " "..buttonText.." "
+			buttonText = " " .. buttonText .. " "
 		else
-			local labelLine = string.rep(" ", math.floor((buttonLen - #buttonText) / 2))..buttonText
-			buttonText = labelLine..string.rep(" ", buttonLen - #labelLine)
+			local labelLine = string.rep(" ", math.floor((buttonLen - #buttonText) / 2)) .. buttonText
+			buttonText = labelLine .. string.rep(" ", buttonLen - #labelLine)
 		end
 		for i = 1, maxY - minY + 1 do
 			if maxY == minY or i == math.floor((maxY - minY) / 2) + 1 then
@@ -36,8 +51,8 @@ end
 local Button = {
 	draw = function(self)
 		local old = term.redirect(self.mon)
-		term.setTextColor(tonumber(textColor))
-		term.setBackgroundColor(tonumber(backgroundColor))
+		term.setTextColor(colors.white)
+		term.setBackgroundColor(colors.black)
 		term.clear()
 		for name, buttonData in pairs(self.buttonList) do
 			if buttonData.active then
@@ -108,16 +123,17 @@ local Button = {
 	run = function(self)
 		while true do
 			self:draw()
-			local event = {self:handleEvents(os.pullEvent(self.side == "term" and "mouse_click" or "monitor_touch"))}
+			local event = { self:handleEvents(os.pullEvent(self.side == "term" and "mouse_click" or "monitor_touch")) }
 			if event[1] == "button_click" then
 				self.buttonList[event[2]].func()
 			end
 		end
 	end,
 	handleEvents = function(self, ...)
-		local event = {...}
-		if #event == 0 then event = {os.pullEvent()} end
-		if (self.side == "term" and event[1] == "mouse_click") or (self.side ~= "term" and event[1] == "monitor_touch" and event[2] == self.side) then
+		local event = { ... }
+		if #event == 0 then event = { os.pullEvent() } end
+		if (self.side == "term" and event[1] == "mouse_click") or
+			(self.side ~= "term" and event[1] == "monitor_touch" and event[2] == self.side) then
 			local clicked = self.clickMap[event[3]][event[4]]
 			if clicked and self.buttonList[clicked] then
 				return "button_click", clicked
@@ -135,7 +151,8 @@ local Button = {
 		self:toggleButton(name)
 	end,
 	rename = function(self, name, newName)
-		self.buttonList[name].label, newName = setupLabel(self.buttonList[name].xMax - self.buttonList[name].xMin + 1, self.buttonList[name].yMin, self.buttonList[name].yMax, newName)
+		self.buttonList[name].label, newName = setupLabel(self.buttonList[name].xMax - self.buttonList[name].xMin + 1,
+			self.buttonList[name].yMin, self.buttonList[name].yMax, newName)
 		if not self.buttonList[name] then error("no such button", 2) end
 		if name ~= newName then
 			self.buttonList[newName] = self.buttonList[name]
@@ -161,6 +178,6 @@ function new(monSide)
 	for i = 1, x do
 		buttonInstance.clickMap[i] = {}
 	end
-	setmetatable(buttonInstance, {__index = Button})
+	setmetatable(buttonInstance, { __index = Button })
 	return buttonInstance
 end
