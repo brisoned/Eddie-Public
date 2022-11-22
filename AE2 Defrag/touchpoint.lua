@@ -2,10 +2,6 @@
 -- Original work by Thor_s_Crafter on https://github.com/ThorsCrafter/Reactor-and-Turbine-control-program -- 
 -- Touchpoint API by Lyqyd - Slightly changed --
 
-local file = fs.open("/extreme-reactors-control/config/options.txt","r")
-local list = file.readAll()
-file.close()
-
 --Insert Elements and assign values
 optionList = textutils.unserialise(list)
 backgroundColor = tonumber(optionList["backgroundColor"])
