@@ -22,6 +22,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 --]]
 
+--wpp support needed for file.
+wpp = require("dependencies/wpp")
+wpp.wireless.connect("defrag")
+
 local function setupLabel(buttonLen, minY, maxY, name)
 	local labelTable = {}
 	if type(name) == "table" then
@@ -168,9 +172,14 @@ local Button = {
 }
 
 function new(monSide)
+	if wpp ~= nil then
+		mon1 = monSide and wpp.peripheral.wrap(monSide) or term.current()
+	else
+		mon1 = monSide and peripheral.wrap(monSide) or term.current()
+	end
 	local buttonInstance = {
 		side = monSide or "term",
-		mon = monSide and peripheral.wrap(monSide) or term.current(),
+		mon = mon1,
 		buttonList = {},
 		clickMap = {},
 	}
