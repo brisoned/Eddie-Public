@@ -637,7 +637,7 @@ end
 --based on user settings (reactorOn, reactorOff)
 function checkEnergyLevel()
    -- print("in checkEnergylevel 620")
-   -- printStatsAuto(currStat)
+   printStatsAuto(currStat)
   --  print("after printStats Auto 623")
     --Level > user setting (default: 90%)
     if getEnergyPer() >= reactorOffAt then

@@ -1,6 +1,6 @@
 {
   mainMenu = true,
-  rodLevel = 0,
+  rodLevel = 24,
   skipControlRodCheck = true,
   targetSpeed = 2000,
   overallMode = "auto",
