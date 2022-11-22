@@ -1,5 +1,5 @@
 -- Extreme Reactors Control by SeekerOfHonjo --
--- Original work by Thor_s_Crafter on https://github.com/ThorsCrafter/Reactor-and-Turbine-control-program -- 
+-- Original work by Thor_s_Crafter on https://github.com/ThorsCrafter/Reactor-and-Turbine-control-program --
 -- Version 1.0 --
 -- Start program --
 
@@ -20,12 +20,17 @@ _G.program = ""
 _G.turbineTargetSpeed = 0
 _G.targetSteam = 0
 _G.turbineOnOff = ""
-_G.debug = 0
+_G.debug1 = 0
 _G.skipControlRodCheck = 0
 _G.location = ""
 _G.modemChannel = 0
 _G.wirelessModemLocation = "top"
 _G.language = {}
+
+--wpp support
+local wpp = require("/wpp")
+wpp.wireless.connect("reactor")
+local usewpp = true
 
 --TouchpointLocation (same as the monitor)
 _G.touchpointLocation = {}
@@ -36,8 +41,8 @@ _G.touchpointLocation = {}
 
 local repoUrl = "https://gitlab.com/seekerscomputercraft/extremereactorcontrol/-/raw/"
 
-function _G.debugOutput(message) 
-	if _G.debug == 1 then
+function _G.debugOutput(message)
+	if _G.debug1 == 1 then
 		print(message)
 	end
 end
@@ -46,31 +51,31 @@ end
 function _G.loadOptionFile()
 	debugOutput("Loading Option File")
 	--Loads the file
-	local file = fs.open("/extreme-reactors-control/config/options.txt","r")
+	local file = fs.open("/extreme-reactors-control/config/options.txt", "r")
 	local list = file.readAll()
 	file.close()
 
-    --Insert Elements and assign values
-    _G.optionList = textutils.unserialise(list)
+	--Insert Elements and assign values
+	_G.optionList = textutils.unserialise(list)
 
 	--Assign values to variables
-	_G.version = optionList["version"]
-	_G.rodLevel = optionList["rodLevel"]
-	_G.backgroundColor = tonumber(optionList["backgroundColor"])
-	_G.textColor = tonumber(optionList["textColor"])
-	_G.reactorOffAt = optionList["reactorOffAt"]
-	_G.reactorOnAt = optionList["reactorOnAt"]
-	_G.mainMenu = optionList["mainMenu"]
-	_G.overallMode = optionList["overallMode"]
-	_G.program = optionList["program"]
-	_G.turbineTargetSpeed = optionList["turbineTargetSpeed"]
-	_G.targetSteam  = optionList["targetSteam"]
-	_G.turbineOnOff = optionList["turbineOnOff"]
-	_G.debug = optionList["debug"]
+	_G.version             = optionList["version"]
+	_G.rodLevel            = optionList["rodLevel"]
+	_G.backgroundColor     = tonumber(optionList["backgroundColor"])
+	_G.textColor           = tonumber(optionList["textColor"])
+	_G.reactorOffAt        = optionList["reactorOffAt"]
+	_G.reactorOnAt         = optionList["reactorOnAt"]
+	_G.mainMenu            = optionList["mainMenu"]
+	_G.overallMode         = optionList["overallMode"]
+	_G.program             = optionList["program"]
+	_G.turbineTargetSpeed  = optionList["turbineTargetSpeed"]
+	_G.targetSteam         = optionList["targetSteam"]
+	_G.turbineOnOff        = optionList["turbineOnOff"]
+	_G.debug1              = optionList["debug"]
 	_G.skipControlRodCheck = optionList["skipControlRodCheck"]
-	_G.lang = optionList["language"]
-	_G.location = optionList["location"]
-	_G.modemChannel = optionList["modemChannel"]
+	_G.lang                = optionList["language"]
+	_G.location            = optionList["location"]
+	_G.modemChannel        = optionList["modemChannel"]
 end
 
 --Refreshes the options list
@@ -80,9 +85,9 @@ function _G.refreshOptionList()
 	optionList["version"] = version
 	debugOutput("Variable: rodLevel")
 	optionList["rodLevel"] = rodLevel
-	debugOutput("Variable: backgroundColor"..backgroundColor)
+	debugOutput("Variable: backgroundColor" .. backgroundColor)
 	optionList["backgroundColor"] = backgroundColor
-	debugOutput("Variable: textColor = "..textColor)
+	debugOutput("Variable: textColor = " .. textColor)
 	optionList["textColor"] = textColor
 	debugOutput("Variable: reactorOffAt")
 	optionList["reactorOffAt"] = reactorOffAt
@@ -108,23 +113,25 @@ function _G.refreshOptionList()
 	optionList["location"] = location
 	debugOutput("Variable: modemChannel")
 	optionList["modemChannel"] = modemChannel
-	optionList["debug"] = debug
+ optionList["debug"] = debug1
 end
 
 --Saves all data back to the options.txt file
 function _G.saveOptionFile()
 	debugOutput("Saving Option File")
 	--Refresh option list
+ print("doing saveoptionfile")
 	refreshOptionList()
-    --Serialise the table
-    local list = textutils.serialise(optionList)
+	--Serialise the table
+print(optionList)	
+local list = textutils.serialise(optionList)
+ print(list)
 	--Save optionList to the config file
-	local file = fs.open("/extreme-reactors-control/config/options.txt","w")
-    file.writeLine(list)
+	local file = fs.open("/extreme-reactors-control/config/options.txt", "w")
+	file.writeLine(list)
 	file.close()
 	print("Saved.")
 end
-
 
 --===== Automatic update detection =====
 
@@ -133,7 +140,7 @@ function _G.checkUpdates()
 
 	--Check current branch (release or beta)
 	local currBranch = ""
-	local tmpString = string.sub(version,5,5)
+	local tmpString = string.sub(version, 5, 5)
 	if tmpString == "" or tmpString == nil or tmpString == "r" then
 		currBranch = "main"
 	elseif tmpString == "b" then
@@ -141,75 +148,74 @@ function _G.checkUpdates()
 	end
 
 	--Get Remote version file
-	downloadFile(repoUrl..currBranch.."/",currBranch..".ver")
+	downloadFile(repoUrl .. currBranch .. "/", currBranch .. ".ver")
 
 	--Compare local and remote version
-	local file = fs.open(currBranch..".ver","r")
+	local file = fs.open(currBranch .. ".ver", "r")
 	local remoteVer = file.readLine()
 	file.close()
-	
-	print("Energy Storage Devices: "..(#capacitors + 1))
-	print("localVer: "..version)
-	
-    if remoteVer == nil then
+
+	print("Energy Storage Devices: " .. (#capacitors + 1))
+	print("localVer: " .. version)
+
+	if remoteVer == nil then
 		print("Couldn't get remote version from gitlab.")
 	else
-		print("remoteVer: "..remoteVer)
-		print("Update? -> "..tostring(remoteVer > version))
-	
-	    --Update if available
-	    if remoteVer > version then
-		    print("Update...")
-		    sleep(2)
-		    doUpdate(remoteVer,currBranch)
-	    end
+		print("remoteVer: " .. remoteVer)
+		print("Update? -> " .. tostring(remoteVer > version))
+
+		--Update if available
+		if remoteVer > version then
+			print("Update...")
+			sleep(2)
+			doUpdate(remoteVer, currBranch)
+		end
 	end
 
 	--Remove remote version file
-	shell.run("rm "..currBranch..".ver")
+	shell.run("rm " .. currBranch .. ".ver")
 end
 
-
-function _G.doUpdate(toVer,branch)
+function _G.doUpdate(toVer, branch)
 
 	--Set the monitor up
-	local x,y = controlMonitor.getSize()
+	local x, y = controlMonitor.getSize()
 	controlMonitor.setBackgroundColor(colors.black)
 	controlMonitor.clear()
 
-	local x1 = x/2-15
-	local y1 = y/2-4
-	local x2 = x/2
-	local y2 = y/2
+	local x1 = x / 2 - 15
+	local y1 = y / 2 - 4
+	local x2 = x / 2
+	local y2 = y / 2
 
 	--Draw Box
 	controlMonitor.setBackgroundColor(colors.gray)
 	controlMonitor.setTextColor(colors.gray)
-	controlMonitor.setCursorPos(x1,y1)
-	for i=1,8 do
-		controlMonitor.setCursorPos(x1,y1+i-1)
+	controlMonitor.setCursorPos(x1, y1)
+	for i = 1, 8 do
+		controlMonitor.setCursorPos(x1, y1 + i - 1)
 		controlMonitor.write("                              ") --30 chars
 	end
 
 	--Print update message
 	controlMonitor.setTextColor(colors.white)
 
-	controlMonitor.setCursorPos(x2-9,y1+1)
+	controlMonitor.setCursorPos(x2 - 9, y1 + 1)
 	controlMonitor.write(_G.language:getText("updateAvailableLineOne")) --17 chars
 
-	controlMonitor.setCursorPos(x2-(math.ceil(string.len(toVer)/2)),y1+3)
+	controlMonitor.setCursorPos(x2 - (math.ceil(string.len(toVer) / 2)), y1 + 3)
 	controlMonitor.write(toVer)
 
-	controlMonitor.setCursorPos(x2-8,y1+5)
+	controlMonitor.setCursorPos(x2 - 8, y1 + 5)
 	controlMonitor.write(_G.language:getText("updateAvailableLineTwo")) --15 chars
 
-	controlMonitor.setCursorPos(x2-12,y1+6)
+	controlMonitor.setCursorPos(x2 - 12, y1 + 6)
 	controlMonitor.write(_G.language:getText("updateAvailableLineThree")) --24 chars
 
 	--Print install instructions to the terminal
 	term.clear()
-	term.setCursorPos(1,1)
-	local tx,ty = term.getSize()
+	term.setCursorPos(1, 1)
+	local tx, ty = term.getSize()
 
 	print(_G.language:getText("updateProgram"))
 	term.write("Input: ")
@@ -218,7 +224,7 @@ function _G.doUpdate(toVer,branch)
 	local count = 10
 	local out = false
 
-	term.setCursorPos(tx/2-5,ty)
+	term.setCursorPos(tx / 2 - 5, ty)
 	term.write(" -- 10 -- ")
 
 	while true do
@@ -232,7 +238,7 @@ function _G.doUpdate(toVer,branch)
 			if event == "key" then
 
 				if p1 == 36 or p1 == 21 then
-					shell.run("/extreme-reactors-control/install/installer.lua update "..branch)
+					shell.run("/extreme-reactors-control/install/installer.lua update " .. branch)
 					out = true
 					break
 				end
@@ -240,8 +246,8 @@ function _G.doUpdate(toVer,branch)
 			elseif event == "timer" and p1 == timer1 then
 
 				count = count - 1
-				term.setCursorPos(tx/2-5,ty)
-				term.write(" -- 0"..count.." -- ")
+				term.setCursorPos(tx / 2 - 5, ty)
+				term.write(" -- 0" .. count .. " -- ")
 				break
 			end
 		end
@@ -250,55 +256,53 @@ function _G.doUpdate(toVer,branch)
 
 		if count == 0 then
 			term.clear()
-			term.setCursorPos(1,1)
+			term.setCursorPos(1, 1)
 			break
 		end
 	end
 end
 
 --Download Files (For Remote version file)
-function _G.downloadFile(relUrl,path)
-	local gotUrl = http.get(relUrl..path)
+function _G.downloadFile(relUrl, path)
+	local gotUrl = http.get(relUrl .. path)
 	if gotUrl == nil then
 		term.clear()
-		error("File not found! Please check!\nFailed at "..relUrl..path)
+		error("File not found! Please check!\nFailed at " .. relUrl .. path)
 	else
 		_G.url = gotUrl.readAll()
 	end
 
-	local file = fs.open(path,"w")
+	local file = fs.open(path, "w")
 	file.write(url)
 	file.close()
 end
-
 
 --===== Shutdown and restart the computer =====
 
 function _G.reactorestart()
 	saveOptionFile()
 	controlMonitor.clear()
-	controlMonitor.setCursorPos(38,8)
+	controlMonitor.setCursorPos(38, 8)
 	controlMonitor.write("Rebooting...")
 	os.reboot()
 end
 
-
 function initClasses()
-    --Execute necessary class files
-    local binPath = "/extreme-reactors-control/classes/"
-    shell.run(binPath.."base/Reactor.lua")
-    shell.run(binPath.."base/Turbine.lua")
-    shell.run(binPath.."base/EnergyStorage.lua")
-    shell.run(binPath.."bigger_reactors/Reactor.lua")
-    shell.run(binPath.."bigger_reactors/Turbine.lua")
-    shell.run(binPath.."mekanism/MekanismEnergyStorage.lua")
-    shell.run(binPath.."thermal_expansion/ThermalExpansionEnergyStorage.lua")
-    shell.run(binPath.."Peripherals.lua")
-    shell.run(binPath.."Language.lua")
-	shell.run(binPath.."transport/reactoronly.lua")
-	shell.run(binPath.."transport/reactorTurbine.lua")
-	shell.run(binPath.."transport/startup.lua")
-    shell.run(binPath.."transport/wrapper.lua")
+	--Execute necessary class files
+	local binPath = "/extreme-reactors-control/classes/"
+	shell.run(binPath .. "base/Reactor.lua")
+	shell.run(binPath .. "base/Turbine.lua")
+	shell.run(binPath .. "base/EnergyStorage.lua")
+	shell.run(binPath .. "bigger_reactors/Reactor.lua")
+	shell.run(binPath .. "bigger_reactors/Turbine.lua")
+	shell.run(binPath .. "mekanism/MekanismEnergyStorage.lua")
+	shell.run(binPath .. "thermal_expansion/ThermalExpansionEnergyStorage.lua")
+	shell.run(binPath .. "Peripherals.lua")
+	shell.run(binPath .. "Language.lua")
+	shell.run(binPath .. "transport/reactoronly.lua")
+	shell.run(binPath .. "transport/reactorTurbine.lua")
+	shell.run(binPath .. "transport/startup.lua")
+	shell.run(binPath .. "transport/wrapper.lua")
 end
 
 --=========== Run the program ==========
@@ -321,7 +325,7 @@ debugOutput("Checking for Updates")
 checkUpdates()
 
 --Run program or main menu, based on the settings
-if  amountReactors < 0 then
+if amountReactors < 0 then
 	--this is a monitor only we do show anything with the menu
 	shell.run("/extreme-reactors-control/program/monitor.lua")
 elseif mainMenu then
