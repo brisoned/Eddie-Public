@@ -1,4 +1,4 @@
--- Extreme Reactors Control by SeekerOfHonjo --
+    -- Extreme Reactors Control by SeekerOfHonjo --
 -- Original work by Thor_s_Crafter on https://github.com/ThorsCrafter/Reactor-and-Turbine-control-program --
 -- Version 1.0 --
 -- Turbine control --
@@ -23,7 +23,7 @@ local tOn
 local tOff
 local aTOn
 local aTOff
-local aTN = { "  -  ", label = "aTurbinesOn" }
+local aTN = {"  -  ", label = "aTurbinesOn"}
 local cOn
 local cOff
 --Last/Current turbine (for switching)
@@ -36,14 +36,14 @@ local speedFailCounter = {}
 
 --Button renaming
 
-rOn = { " " .. _G.language:getText("wordOn") .. "  ", label = "reactorOn" }
-rOff = { " " .. _G.language:getText("wordOff") .. " ", label = "reactorOn" }
-tOn = { " " .. _G.language:getText("wordOn") .. "  ", label = "turbineOn" }
-tOff = { " " .. _G.language:getText("wordOff") .. " ", label = "turbineOn" }
-aTOn = { " " .. _G.language:getText("wordOn") .. " ", label = "aTurbinesOn" }
-aTOff = { " " .. _G.language:getText("wordOff") .. " ", label = "aTurbinesOn" }
-cOn = { " " .. _G.language:getText("wordOn") .. "  ", label = "coilsOn" }
-cOff = { " " .. _G.language:getText("wordOff") .. " ", label = "coilsOn" }
+rOn = {" ".._G.language:getText("wordOn").."  ", label = "reactorOn"}
+rOff = {" ".._G.language:getText("wordOff").." ", label = "reactorOn"}
+tOn = {" ".._G.language:getText("wordOn").."  ", label = "turbineOn"}
+tOff = {" ".._G.language:getText("wordOff").." ", label = "turbineOn"}
+aTOn = {" ".._G.language:getText("wordOn").." ", label = "aTurbinesOn"}
+aTOff = {" ".._G.language:getText("wordOff").." ", label = "aTurbinesOn"}
+cOn = {" ".._G.language:getText("wordOn").."  ", label = "coilsOn"}
+cOff = {" ".._G.language:getText("wordOff").." ", label = "coilsOn"}
 
 --Init auto mode
 function startAutoMode()
@@ -85,14 +85,13 @@ function startAutoMode()
                 controlMonitor.setCursorPos(1, 1)
 
                 controlMonitor.write(
-                    _G.language:getText("gettingTurbinesTo") ..
-                    (input.formatNumberComma(turbineTargetSpeed)) .. " RPM. " .. _G.language:getText("pleaseWait")
+                    _G.language:getText("gettingTurbinesTo") .. (input.formatNumberComma(turbineTargetSpeed)) .. " RPM. ".._G.language:getText("pleaseWait")
                 )
             end
 
             if turbines[i] == nil then
-                debugOutput("Turbine " .. i .. " -> is NIL stuff is broken")
-                debugOutput("Total Turbines = " .. amountTurbines)
+                debugOutput("Turbine " ..i.. " -> is NIL stuff is broken")
+                debugOutput("Total Turbines = " ..amountTurbines)
             else
                 printTurbineData(turbines[i])
             end
@@ -112,11 +111,11 @@ function startAutoMode()
                 --formatting and printing status
                 controlMonitor.setTextColor(textColor)
                 controlMonitor.setCursorPos(1, (badReactor + 3))
-                if badReactor < (columnMax * 4) then
-                    if badReactor >= (columnMax * 3) then
-                        controlMonitor.setCursorPos(54, (badReactor - (columnMax * 3) + 3))
-                    elseif badReactor >= (columnMax * 2) then
-                        controlMonitor.setCursorPos(36, (badReactor - (columnMax * 2) + 3))
+                if badReactor < (columnMax*4) then
+                    if badReactor >= (columnMax*3) then
+                        controlMonitor.setCursorPos(54, (badReactor - (columnMax*3) + 3))
+                    elseif badReactor >= (columnMax*2) then
+                        controlMonitor.setCursorPos(36, (badReactor - (columnMax*2) + 3))
                     elseif badReactor >= columnMax then
                         controlMonitor.setCursorPos(18, (badReactor - columnMax + 3))
                     end
@@ -126,9 +125,9 @@ function startAutoMode()
                             "00" .. (i + 1) .. ": " .. (input.formatNumberComma(math.floor(tSpeed))) .. "RPM"
                         )
                     elseif (i + 1) < 100 then
-                        controlMonitor.write(
-                            "0" .. (i + 1) .. ": " .. (input.formatNumberComma(math.floor(tSpeed))) .. "RPM"
-                        )
+                            controlMonitor.write(
+                                "0" .. (i + 1) .. ": " .. (input.formatNumberComma(math.floor(tSpeed))) .. "RPM"
+                            )
                     else
                         controlMonitor.write((i + 1) .. ": " .. (input.formatNumberComma(math.floor(tSpeed))) .. "RPM")
                     end
@@ -140,7 +139,7 @@ function startAutoMode()
     --Enable reactor and turbines
     allReactorsOn()
     allTurbinesOn()
-    --  print("before SpeedMaxin LINE 142")
+  --  print("before SpeedMaxin LINE 142")
     maintainSpeedMaxInAuto()
 
     --Reset terminal
@@ -204,7 +203,7 @@ function checkPeripherals()
         error(_G.language:getText("reactorsNotFound"))
     end
     --No energy storage found
-    if capacitors[0] == nil then
+    if capacitors[0] == nil then   
         controlMonitor.write(_G.language:getText("capicitorsNotFound"))
         error(_G.language:getText("capicitorsNotFound"))
     end
@@ -215,17 +214,17 @@ function getEnergy()
 
     for i = 0, amountCapacitors, 1 do
         local stored = capacitors[i]:energy()
-        if stored then
-            local stored = math.floor(capacitors[i]:energy())
+        if stored then 
+        local stored = math.floor(capacitors[i]:energy())
         else
-            local stored = 0
+        local stored = 0
         end
         if energyStore then
-            energyStore = energyStore + stored
-        else
-            energyStore = 0 + stored
-        end
-    end
+        energyStore = energyStore + stored
+         else
+          energyStore = 0 + stored
+      end  
+     end
 
     return energyStore
 end
@@ -244,7 +243,7 @@ end
 function getEnergyPer()
     local en = getEnergy()
     local enMax = getEnergyMax()
-    print(en .. " of " .. enMax)
+    -- print(en .. " of " .. enMax)
     local enPer = math.floor(en / enMax * 100)
     return enPer
 end
@@ -351,6 +350,7 @@ end
 
 --Toggles one turbine status and button
 function toggleTurbine(i)
+    print("func toggleTurbine called")
     turbines[i]:setOn(not turbines[i]:active())
     page:toggleButton("turbineOn")
     if turbines[i]:active() then
@@ -362,6 +362,7 @@ end
 
 --Toggles one turbine coils and button
 function toggleCoils(i)
+    print("func ToggleCoils called")
     turbines[i]:setCoils(not turbines[i]:coilsEngaged())
     page:toggleButton("coilsOn")
     if turbines[i]:coilsEngaged() then
@@ -373,6 +374,7 @@ end
 
 --Enable all turbines (Coils engaged, FluidRate 2000mb/t)
 function allTurbinesOn()
+    print("func allTurbinesOn called")
     for i = 0, amountTurbines, 1 do
         turbines[i]:setOn(true)
         turbines[i]:setCoils(true)
@@ -382,6 +384,7 @@ end
 
 --Disable all turbiens (Coils disengaged, FluidRate 0mb/t)
 function allTurbinesOff()
+    print("func allTurbinesoff")
     for i = 0, amountTurbines, 1 do
         turbines[i]:setCoils(false)
         turbines[i]:setSteamIn(0)
@@ -390,18 +393,21 @@ end
 
 --Enable one turbine
 function turbineOn(i)
+    print("func turbineOn called")
     turbines[i]:setCoils(true)
     turbines[i]:setSteamIn(targetSteam)
 end
 
 --Disable one turbine
 function turbineOff(i)
+    print("func turbineOff called")
     turbines[i]:setCoils(false)
     turbines[i]:setSteamIn(0)
 end
 
 --Toggles all turbines (and buttons)
 function toggleAllTurbines()
+    print("func toggleAllTurbines called")
     page:rename("aTurbinesOn", aTOff, true)
     local onOff
     if turbines[0].active() then
@@ -430,6 +436,7 @@ end
 
 --Toggles all turbine coils (and buttons)
 function toggleAllCoils()
+    print("toggleAllCoils called")
     local coilsOnOff
     if turbines[0].coilsEngaged() then
         coilsOnOff = "off"
@@ -483,8 +490,7 @@ function findOptimalFuelRodLevel()
         controlMonitor.write(_G.language:getText("calculatingLevel"))
         controlMonitor.setCursorPos(1, 5)
         controlMonitor.write(
-            _G.language:getText("targetSteamOutput") ..
-            (input.formatNumberComma(math.floor(targetSteamOutput))) .. "mb/t"
+            _G.language:getText("targetSteamOutput") .. (input.formatNumberComma(math.floor(targetSteamOutput))) .. "mb/t"
         )
 
         --Calculate Level based on 2 values
@@ -521,6 +527,7 @@ function findOptimalFuelRodLevel()
 
                     --Disable reactor and turbines
                     allReactorsOff()
+                print("line 530 all turbines off")
                     allTurbinesOff()
                     for i = 1, amountTurbines do
                         turbines[i]:setOn(false)
@@ -528,7 +535,7 @@ function findOptimalFuelRodLevel()
 
                     term.clear()
                     term.setCursorPos(1, 1)
-                    print(_G.language:getText("targetRodLevel") .. targetLevel)
+                    print(_G.language:getText("targetRodLevel").. targetLevel)
                     error(_G.language:getText("rodLevelFailed"))
                 else
                     failCounter = failCounter + 1
@@ -556,7 +563,7 @@ function findOptimalFuelRodLevel()
                 end
                 rodLevel = controlRodLevel
                 saveOptionFile()
-                print(_G.language:getText("targetRodLevel") .. controlRodLevel)
+                print(_G.language:getText("targetRodLevel").. controlRodLevel)
                 sleep(2)
                 break
             end
@@ -567,8 +574,7 @@ function findOptimalFuelRodLevel()
             controlMonitor.write(_G.language:getText("fuelRodLevel") .. controlRodLevel .. "  ")
 
             controlMonitor.setCursorPos(1, 6)
-            controlMonitor.write(_G.language:getText("currentSteamOutput") ..
-                (input.formatNumberComma(steamOutput)) .. "mb/t    ")
+            controlMonitor.write(_G.language:getText("currentSteamOutput") .. (input.formatNumberComma(steamOutput)) .. "mb/t    ")
 
             --Level too big
             if steamOutput < targetSteamOutput then
@@ -630,16 +636,17 @@ end
 --Checks the current energy level and controlls turbines/reactor
 --based on user settings (reactorOn, reactorOff)
 function checkEnergyLevel()
-    -- print("in checkEnergylevel 620")
-    -- printStatsAuto(currStat)
-    --  print("after printStats Auto 623")
+   -- print("in checkEnergylevel 620")
+   -- printStatsAuto(currStat)
+  --  print("after printStats Auto 623")
     --Level > user setting (default: 90%)
     if getEnergyPer() >= reactorOffAt then
         --Level < user setting (default: 50%)
-        --   print("Energy >= reactorOffAt")
+     --   print("Energy >= reactorOffAt")
         if turbineOnOff == "on" then
             allTurbinesOn()
         elseif turbineOnOff == "off" then
+            print("649 all turbine off")
             allTurbinesOff()
         end
         allReactorsOff()
@@ -683,8 +690,8 @@ function getToTargetSpeed()
     for i = 0, amountTurbines, 1 do
 
         if turbines[i] == nil then
-            debugOutput("Turbine " .. i .. " -> is NIL stuff is broken")
-            debugOutput("Total Turbines = " .. amountTurbines)
+            debugOutput("Turbine " ..i.. " -> is NIL stuff is broken")
+            debugOutput("Total Turbines = " ..amountTurbines)
         else
             printTurbineData(turbines[i])
 
@@ -736,10 +743,10 @@ end
 --Returns true if all turbines are at targetSpeed
 function allAtTargetSpeed()
     for i = 0, amountTurbines do
-
+        
         if turbines[i] == nil then
-            debugOutput("Turbine " .. i .. " -> is NIL stuff is broken")
-            debugOutput("Total Turbines = " .. amountTurbines)
+            debugOutput("Turbine " ..i.. " -> is NIL stuff is broken")
+            debugOutput("Total Turbines = " ..amountTurbines)
         end
 
         if (turbines[i] ~= nil and turbines[i]:rotorSpeed() < turbineTargetSpeed) then
@@ -900,7 +907,7 @@ function createAllButtons()
         local x3 = 54
         local x4 = 61
         local y = 4
-
+    
         --Turbine buttons
         for i = 0, amountTurbines, 1 do
             if overallMode == "auto" then
@@ -916,7 +923,7 @@ function createAllButtons()
                 if (i == 7 or i == 15 or i == 23) then y = 4
                 else y = y + 2
                 end
-
+    
             elseif overallMode == "manual" then
                 if i <= 7 then
                     page:add("#" .. (i + 1), function() printStatsMan(i) end, x1, y, x1 + 5, y)
@@ -932,10 +939,9 @@ function createAllButtons()
                 end
             end --mode
         end --for
-
+    
         --Other buttons
-        page:add(_G.language:getText("wordMainMenu"), function() run("/extreme-reactors-control/start/menu.lua") end, 2,
-            23, 17, 23)
+        page:add(_G.language:getText("wordMainMenu"), function() run("/extreme-reactors-control/start/menu.lua") end, 2, 23, 17, 23)
     end
 
     page:draw()
@@ -998,9 +1004,9 @@ function clickEvent()
     while true do
         --refresh screen
         if overallMode == "auto" then
-            -- print("in clickEvent")
+           -- print("in clickEvent")
             checkEnergyLevel()
-            -- print("going into maintain speed func")
+           -- print("going into maintain speed func")
             maintainSpeedMaxInAuto()
         elseif overallMode == "manual" then
             printStatsMan(currStat)
@@ -1029,50 +1035,50 @@ end
 function maintainSpeedMaxInAuto()
     for i = 0, amountTurbines, 1 do
         local lTurbine = turbines[i]
-        if not currentRPMold then
-            currentRPMold = 0
-        else
-            currentRPMold = math.floor(currentRPM)
+                if not currentRPMold then
+                currentRPMold = 0
+                else
+                currentRPMold = math.floor(currentRPM)
+                end 
+                --currentRPMold = currentRPM
+                currRPM = lTurbine:rotorSpeed()
+                if not currRPM then
+                currentRPM = 0
+                else
+                currentRPM = math.floor(currRPM)
+                end
+                --currentRPMold = currentRPM
+                staticRPMsteam = 0
+                staticcount = 0
+       -- print("Get Turbine Speed" .. "old value:" .. currentRPMold .. "new value:" .. currentRPM)
+        if currentRPMold == currentRPM and staticcount <2 and staticRPMsteam == 0 then 
+       -- print("Potential Static Value Found")
+        staticcount = staticcount + 1
+        elseif currentRPMold == currentRPM and staticcount >=2 and staticRPMSteam == 0 then
+       -- print("Setting Static Steam Value!")
+        staticRPMsteam = lTurbine:steamIn()
         end
-        --currentRPMold = currentRPM
-        currRPM = lTurbine:rotorSpeed()
-        if not currRPM then
-            currentRPM = 0
-        else
-            currentRPM = math.floor(currRPM)
-        end
-        --currentRPMold = currentRPM
-        staticRPMsteam = 0
-        staticcount = 0
-        -- print("Get Turbine Speed" .. "old value:" .. currentRPMold .. "new value:" .. currentRPM)
-        if currentRPMold == currentRPM and staticcount < 2 and staticRPMsteam == 0 then
-            -- print("Potential Static Value Found")
-            staticcount = staticcount + 1
-        elseif currentRPMold == currentRPM and staticcount >= 2 and staticRPMSteam == 0 then
-            -- print("Setting Static Steam Value!")
-            staticRPMsteam = lTurbine:steamIn()
-        end
-        if currentRPM < _G.turbineTargetSpeed + 20 and currentRPM > _G.turbineTargetSpeed - 20 then
-            -- do nothing
+        if currentRPM < _G.turbineTargetSpeed+20 and currentRPM > _G.turbineTargetSpeed-20 then
+           -- do nothing
             -- speed iso good
             if staticRPMsteam ~= 0 then
                 print("Turbine within bounds setting static value")
                 lTurbine:setSteamIn(staticRPMsteam)
             end
-        elseif currentRPM < _G.turbineTargetSpeed + 20 then
+        elseif currentRPM < _G.turbineTargetSpeed+20 then
             local newSteamAmount = lTurbine:steamIn() + lTurbine:decrementAmount()
             lTurbine:setSteamIn(newSteamAmount)
-        else
-            --while currentRPM > _G.turbineTargetSpeed do
-            local newSteamAmount = lTurbine:steamIn() - lTurbine:decrementAmount()
-            --   print("Steam Amount" .. newSteamAmount)
-            if (newSteamAmount >= 0) then
-
-                lTurbine:setSteamIn(newSteamAmount)
-            else
-                --cant go any lower will be lower then 0 and cant have that
-                break
-            end
+         else
+             --while currentRPM > _G.turbineTargetSpeed do
+                local newSteamAmount = lTurbine:steamIn() - lTurbine:decrementAmount()
+             --   print("Steam Amount" .. newSteamAmount)
+                if(newSteamAmount >= 0) then
+    
+                    lTurbine:setSteamIn(newSteamAmount)
+                else
+                    --cant go any lower will be lower then 0 and cant have that
+                    break
+                end
             --end
         end
     end
@@ -1081,7 +1087,7 @@ end
 --displays all info on the screen (auto mode)
 function printStatsAuto(turbine)
     --refresh current turbine
-    print("in printStatsAuto 1038")
+   -- print("in printStatsAuto 1038")
     currStat = turbine
 
     --toggles turbine buttons if pressed (old button off, new button on)
@@ -1103,7 +1109,7 @@ function printStatsAuto(turbine)
 
     controlMonitor.setCursorPos(2, 2)
 
-    controlMonitor.write(_G.language:getText("wordEnergy") .. ": " .. getEnergyPer() .. "%  ")
+    controlMonitor.write(_G.language:getText("wordEnergy")..": " .. getEnergyPer() .. "%  ")
 
     --prints the energy bar
     local part1 = getEnergyPer() / 5
@@ -1122,18 +1128,17 @@ function printStatsAuto(turbine)
 
     controlMonitor.setCursorPos(2, 5)
 
-    controlMonitor.write(_G.language:getText("rfProduction") ..
-        (input.formatNumberComma(data.rfProduced)) .. " KRF/t      ")
+    controlMonitor.write(_G.language:getText("rfProduction") .. (input.formatNumberComma(data.rfProduced)) .. " KRF/t      ")
 
     --Reactor status (on/off)
     controlMonitor.setCursorPos(2, 7)
 
-    if (amountReactors > 0) then
-        controlMonitor.write((amountReactors + 1) .. " " .. _G.language:getText("wordReactors") .. ": ")
+    if (amountReactors > 0) then        
+        controlMonitor.write((amountReactors + 1) .. " ".._G.language:getText("wordReactors")..": ")
     else
-        controlMonitor.write("1 " .. _G.language:getText("wordReactor") .. ": ")
-    end
-
+        controlMonitor.write("1 ".._G.language:getText("wordReactor")..": ")
+    end    
+    
     if getReactorsActive() then
         controlMonitor.setTextColor(colors.green)
         controlMonitor.write("on ")
@@ -1148,24 +1153,23 @@ function printStatsAuto(turbine)
 
     controlMonitor.write(_G.language:getText("fuelConsumption") .. data.fuelConsumed .. "mb/t     ")
     controlMonitor.setCursorPos(2, 10)
-    controlMonitor.write(_G.language:getText("wordSteam") .. ": " .. (input.formatNumberComma(data.steam)) .. "B/t    ")
+    controlMonitor.write(_G.language:getText("wordSteam")..": " .. (input.formatNumberComma(data.steam)) .. "B/t    ")
     controlMonitor.setCursorPos(2, 11)
-    controlMonitor.write(_G.language:getText("wordEfficiency") ..
-        ": " .. (input.formatNumberComma(data.efficiency)) .. " KRF/mb       ")
+    controlMonitor.write(_G.language:getText("wordEfficiency")..": " .. (input.formatNumberComma(data.efficiency)) .. " KRF/mb       ")
     controlMonitor.setCursorPos(30, 2)
-    controlMonitor.write(_G.language:getText("wordTurbines") .. ": " .. (amountTurbines + 1) .. "  ")
+    controlMonitor.write(_G.language:getText("wordTurbines")..": " .. (amountTurbines + 1) .. "  ")
     controlMonitor.setCursorPos(2, 13)
-    controlMonitor.write("-- " .. _G.language:getText("wordTurbine") .. " " .. (turbine + 1) .. " --")
+    controlMonitor.write("-- ".._G.language:getText("wordTurbine").." " .. (turbine + 1) .. " --")
 
     --Currently selected turbine details
 
     --coils
     controlMonitor.setCursorPos(2, 14)
-    controlMonitor.write(_G.language:getText("wordCoils") .. ": ")
+    controlMonitor.write(_G.language:getText("wordCoils")..": ")
 
     if turbines[turbine]:coilsEngaged() then
         controlMonitor.setTextColor(colors.green)
-        controlMonitor.write(_G.language:getText("wordEngaged") .. "     ")
+        controlMonitor.write(_G.language:getText("wordEngaged").."     ")
     end
     if turbines[turbine]:coilsEngaged() == false then
         controlMonitor.setTextColor(colors.red)
@@ -1176,12 +1180,12 @@ function printStatsAuto(turbine)
     --rotor speed/RF-production
     controlMonitor.setCursorPos(2, 15)
 
-    controlMonitor.write(_G.language:getText("turbineSpeed") .. ": ")
+    controlMonitor.write(_G.language:getText("turbineSpeed")..": ")
     controlMonitor.write((input.formatNumberComma(math.floor(turbines[turbine]:rotorSpeed()))) .. " RPM    ")
     controlMonitor.setCursorPos(2, 16)
     controlMonitor.write(
-        _G.language:getText("rfProduction") ..
-        (input.formatNumberComma(math.floor(turbines[turbine]:energyProduction() / 1000))) .. " KRF/t           "
+        _G.language:getText("rfProduction")..
+            (input.formatNumberComma(math.floor(turbines[turbine]:energyProduction()/1000))) .. " KRF/t           "
     )
 
     --Internal buffer of the turbine
@@ -1192,57 +1196,57 @@ function printStatsAuto(turbine)
 
     --prints the current program version
     controlMonitor.setCursorPos(2, 39)
-    controlMonitor.write(_G.language:getText("wordVersion") .. " " .. version)
+    controlMonitor.write(_G.language:getText("wordVersion").." " .. version)
 
     --refreshes the last turbine id
     lastStat = turbine
 end
 
-function emitStartUpMessage(message)
+function emitStartUpMessage(message) 
     _G.newMessage("startUp", _G.newStartUpMessage(message), _G.location)
 end
 
 function emitMessage(data)
     if _G.enableWireless then
         local transmitMessage = _G.newMessage("rtMessage", data, _G.location)
-        _G.wirelessModem.transmit(_G.modemChannel, _G.modemChannel + 1, transmitMessage)
-    end
+        _G.wirelessModem.transmit(_G.modemChannel,_G.modemChannel+1,transmitMessage)
+    end    
 end
 
-function getReactorInfo()
+function getReactorInfo() 
     local reactorInfo = _G.newReactorTurbineMessage(amountTurbines)
 
     local rfGen = 0
 
     for i = 0, amountTurbines, 1 do
         rfGen = rfGen + turbines[i]:energyProduction()
-
+        
         if turbines[i]:coilsEngaged() then
             reactorInfo.turbines[i].engaged = _G.language:getText("wordEngaged")
         end
-        if turbines[i]:coilsEngaged() == false then
+        if turbines[i]:coilsEngaged() == false then            
             reactorInfo.turbines[i].engaged = _G.language:getText("wordDisengaged")
         end
 
         reactorInfo.turbines[i].turbineSpeed = math.floor(turbines[i]:rotorSpeed())
-        reactorInfo.turbines[i].rfProduction = math.floor(turbines[i]:energyProduction() / 1000)
+        reactorInfo.turbines[i].rfProduction = math.floor(turbines[i]:energyProduction()/1000)
         reactorInfo.turbines[i].turbineEnergy = math.floor(getTurbineEnergy(i))
     end
-
+    
     reactorInfo.turbineData = textutils.serialise(reactorInfo.turbines)
     reactorInfo.energyStored = math.floor(getEnergy())
     reactorInfo.energyMax = math.floor(getEnergyMax())
     reactorInfo.reactorCount = (amountReactors + 1)
     reactorInfo.active = getReactorsActive()
-    reactorInfo.steam = math.floor(getSteamProduced() / 1000)
+    reactorInfo.steam = math.floor(getSteamProduced()/1000)
 
     local fuelCons = tostring(getFuelUsed())
     local fuelCons2 = string.sub(fuelCons, 0, 4)
     reactorInfo.fuelConsumed = fuelCons2;
     if not rfGen or not getFuelUsed then eff = 0 else eff = math.floor(rfGen / getFuelUsed()) end
-
+        
     --local eff = math.floor(rfGen / getFuelUsed())
-    reactorInfo.efficiency = math.floor(eff / 1000)
+    reactorInfo.efficiency = math.floor(eff/1000)
     reactorInfo.rfProduced = rfGen;
 
     reactorInfo.casing = 0
@@ -1291,7 +1295,7 @@ function printStatsMan(turbine)
 
     controlMonitor.setCursorPos(2, 2)
 
-    controlMonitor.write(_G.language:getText("wordEnergy") .. ": " .. getEnergyPer() .. "%  ")
+    controlMonitor.write(_G.language:getText("wordEnergy")..": " .. getEnergyPer() .. "%  ")
 
     --prints the energy bar
     local part1 = getEnergyPer() / 5
@@ -1315,31 +1319,30 @@ function printStatsMan(turbine)
 
     --Other status informations
     controlMonitor.setCursorPos(2, 5)
-    controlMonitor.write(_G.language:getText("rfProduction") ..
-        (input.formatNumberComma(math.floor(rfGen / 1000))) .. " KRF/t      ")
+    controlMonitor.write(_G.language:getText("rfProduction") .. (input.formatNumberComma(math.floor(rfGen/1000))) .. " KRF/t      ")
     controlMonitor.setCursorPos(2, 7)
     local fuelCons = tostring(getFuelUsed())
     local fuelCons2 = string.sub(fuelCons, 0, 4)
     controlMonitor.write(_G.language:getText("fuelConsumption") .. fuelCons2 .. "mb/t     ")
     controlMonitor.setCursorPos(2, 9)
-    controlMonitor.write(_G.language:getText("turbineSpeed") .. ": ")
+    controlMonitor.write(_G.language:getText("turbineSpeed")..": ")
     controlMonitor.write((input.formatNumberComma(math.floor(turbines[turbine]:rotorSpeed()))) .. " RPM     ")
     controlMonitor.setCursorPos(2, 11)
-    controlMonitor.write(_G.language:getText("wordReactor") .. ": ")
+    controlMonitor.write(_G.language:getText("wordReactor")..": ")
     controlMonitor.setCursorPos(2, 13)
     controlMonitor.write(_G.language:getText("currentTurbine"))
     controlMonitor.setCursorPos(2, 17)
     controlMonitor.write(_G.language:getText("allTurbines"))
 
     controlMonitor.setCursorPos(2, 15)
-    controlMonitor.write(_G.language:getText("wordCoils") .. ": ")
+    controlMonitor.write(_G.language:getText("wordCoils")..": ")
 
     controlMonitor.setCursorPos(30, 2)
-    controlMonitor.write(_G.language:getText("wordTurbines") .. ": " .. (amountTurbines + 1) .. "  ")
+    controlMonitor.write(_G.language:getText("wordTurbines")..": " .. (amountTurbines + 1) .. "  ")
 
     --prints the current program version
     controlMonitor.setCursorPos(2, 39)
-    controlMonitor.write(_G.language:getText("wordVersion") .. " " .. version)
+    controlMonitor.write(_G.language:getText("wordVersion").." " .. version)
 
     --refreshes the last turbine id
     lastStat = turbine
