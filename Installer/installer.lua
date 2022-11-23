@@ -17,7 +17,7 @@ programs = {
 				["displayName"] = "Touchpoint API"
 			},
 			[2] = {
-				["url"] = "https://raw.githubusercontent.com/krumpaul/public/main/wpp.lua",
+				["url"] = "https://raw.githubusercontent.com/brisoned/Eddie-Public/main/WPP/wpp.lua",
 				["fileName"] = "wpp.lua",
 				["displayName"] = "WPP API",
 			}
