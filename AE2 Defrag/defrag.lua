@@ -364,8 +364,12 @@ function main()
 end
 
 while true do
-    local message = os.pullEvent("modem_message")
-    if message == "Defrag Now!" then
-        print(message)
+    local event, side, senderChannel, replyChannel, message, senderDistance = os.pullEvent("modem_message")
+    for _, m in pairs(message) do
+        print(m)
+        if m == "Defrag Now!" then
+            print(m)
+            main()
+        end
     end
 end
