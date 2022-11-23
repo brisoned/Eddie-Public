@@ -23,19 +23,21 @@ function main()
     term.redirect(monitor)
 
     --Live system peripheral names
-    local systemDriveNames = {
+    systemDriveNames = {
         "ae2:drive_17",
         "ae2:drive_18",
         "ae2:drive_19",
         "ae2:drive_20",
         "ae2:drive_23",
+        "ae2:drive_21",
+        "ae2:drive_22"
     }
 
     --Workspace peripheral names
-    local ioPort = "ae2:io_port_4"
-    local interface = "meBridge_5"
-    local chest = "ae2:chest_6"
-    local drives = {
+    ioPort = "ae2:io_port_4"
+    interface = "meBridge_5"
+    chest = "ae2:chest_6"
+    drives = {
         "ae2:drive_24",
         "ae2:drive_25",
         "ae2:drive_26",
@@ -47,7 +49,7 @@ function main()
     }
 
     --Cell names and capacity
-    local capacityByName = {
+    capacityByName = {
         ["ae2:item_storage_cell_1k"] = 1024,
         ["ae2:item_storage_cell_4k"] = 4096,
         ["ae2:item_storage_cell_16k"] = 16384,
