@@ -10,7 +10,8 @@ shell.setDir(rootDir)
 wpp = require("dependencies/wpp")
 wpp.wireless.connect("defrag")
 
---Wrap monitor
+--monitor
+localmon = "monitor_19"
 monitor = "wpp@defrag://19/monitor_19"
 preWrap = wpp.peripheral.wrap(monitor)
 
@@ -29,8 +30,14 @@ t:draw()
 
 --Testing button clicks
 while true do
+  local event, side, frequency, replyFrequency, message, distance = os.pullEvent("modem_message")
+  for _, m in pairs(message) do
+    if string.find(m, localmon) then
+      monTouch = textutils.unserialise(m)
+    end
+  end
   --# handleEvents will convert monitor_touch events to button_click if it was on a button
-  local event, p1 = t:handleEvents(os.pullEvent())
+  local event, p1 = t:handleEvents(monTouch)
   if event == "button_click" then
     --# p1 will be "left" or "right", since those are the button labels
     --# toggle the button that was clicked.

@@ -172,7 +172,7 @@ local Button = {
 function new(monSide, wrap)
 	local buttonInstance = {
 		side = monSide or "term",
-		mon = mon1 and wrap or term.current(),
+		mon = monSide and wrap or term.current(),
 		buttonList = {},
 		clickMap = {},
 	}
