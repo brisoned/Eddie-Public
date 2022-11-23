@@ -14,13 +14,6 @@ wpp.wireless.connect("defrag")
 monName = "wpp@defrag://19/monitor_19"
 monitor = wpp.peripheral.wrap(monName)
 
-while true do
-    local message = os.pullEvent("modem_message")
-    if message == "Defrag Now!" then
-        print(message)
-    end
-end
-
 function main()
     monitor.clear()
     monitor.setTextScale(0.5)
@@ -39,9 +32,9 @@ function main()
     }
 
     --Workspace peripheral names
-    local ioPort = "ae2:io_port_2"
-    local interface = "wpp@base://15/meBridge_4"
-    local chest = "ae2:chest_3"
+    local ioPort = "ae2:io_port_4"
+    local interface = "meBridge_5"
+    local chest = "ae2:chest_6"
     local drives = {
         "ae2:drive_24",
         "ae2:drive_25",
@@ -58,7 +51,12 @@ function main()
         ["ae2:item_storage_cell_1k"] = 1024,
         ["ae2:item_storage_cell_4k"] = 4096,
         ["ae2:item_storage_cell_16k"] = 16384,
-        ["ae2:item_storage_cell_64k"] = 65536
+        ["ae2:item_storage_cell_64k"] = 65536,
+        ["ae2:item_storage_cell_256k"] = 262144,
+        ["ae2additions:item_storage_cell_1024"] = 1048576,
+        ["ae2additions:item_storage_cell_4096"] = 8388608,
+        ["ae2additions:item_storage_cell_16384"] = 16777216,
+        ["ae2additions:item_storage_cell_65536"] = 67108864
     }
 
     -- /Config
@@ -363,4 +361,11 @@ function main()
         cell:moveBackToSystem()
     end
     redstone.setOutput("bottom", false)
+end
+
+while true do
+    local message = os.pullEvent("modem_message")
+    if message == "Defrag Now!" then
+        print(message)
+    end
 end
