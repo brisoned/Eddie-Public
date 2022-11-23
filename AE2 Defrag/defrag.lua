@@ -11,40 +11,13 @@ wpp = require("dependencies/wpp")
 wpp.wireless.connect("defrag")
 
 --monitor
-localmon = "monitor_19"
-monitor = "wpp@defrag://19/monitor_19"
-preWrap = wpp.peripheral.wrap(monitor)
+monName = "wpp@defrag://19/monitor_19"
+monitor = wpp.peripheral.wrap(monName)
 
---load API
-os.loadAPI("AE2_Defrag/dependencies/touchpoint.lua")
-
---Initialize button set
-t = touchpoint.new(monitor, preWrap)
-
---Add buttons to button set
-t:add("left", nil, 2, 2, 14, 11, colors.red, colors.lime)
-t:add("right", nil, 16, 2, 28, 11, colors.red, colors.lime)
-
---Draw buttons
-t:draw()
-
---Testing button clicks
 while true do
-    local event, side, frequency, replyFrequency, message, distance = os.pullEvent("modem_message")
-    for _, m in pairs(message) do
-        if string.find(m, localmon) then
-            monTouch = textutils.unserialise(m)
-            monTouch[2] = monitor
-        end
-    end
-    --# handleEvents will convert monitor_touch events to button_click if it was on a button
-    local event, p1 = t:handleEvents(monTouch)
-    if event == "button_click" then
-        --# p1 will be "left" or "right", since those are the button labels
-        --# toggle the button that was clicked.
-        t:toggleButton(p1)
-        --# and toggle the redstone output on that side.
-        rs.setOutput(p1, not rs.getOutput(p1))
+    local message = os.pullEvent("modem_message")
+    if message == "Defrag Now!" then
+        print(message)
     end
 end
 
