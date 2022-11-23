@@ -34,6 +34,7 @@ while true do
   for _, m in pairs(message) do
     if string.find(m, localmon) then
       monTouch = textutils.unserialise(m)
+      monTouch[1] = monitor
     end
   end
   --# handleEvents will convert monitor_touch events to button_click if it was on a button
