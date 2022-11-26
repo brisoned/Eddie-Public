@@ -1183,9 +1183,14 @@ function printStatsAuto(turbine)
     controlMonitor.write(_G.language:getText("turbineSpeed")..": ")
     controlMonitor.write((input.formatNumberComma(math.floor(turbines[turbine]:rotorSpeed()))) .. " RPM    ")
     controlMonitor.setCursorPos(2, 16)
+    tmpeng = turbines[turbine]:energyProduction()
+    if tmpeng == nil then
+        tmpeng = 0
+    end
     controlMonitor.write(
         _G.language:getText("rfProduction")..
-            (input.formatNumberComma(math.floor(turbines[turbine]:energyProduction()/1000))) .. " KRF/t           "
+        
+            (input.formatNumberComma(math.floor(tmpeng/1000))) .. " KRF/t           "
     )
 
     --Internal buffer of the turbine
